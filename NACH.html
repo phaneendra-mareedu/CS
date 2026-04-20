@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1400">
+<title>NACH</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   CSS CUSTOM PROPERTIES
+═══════════════════════════════════════════ */
+:root{
+  /* Brand */
+  --navy:#0b1c4e;--navy-deep:#060e2e;--navy-mid:#132268;--navy-light:#1e3a8a;
+  --blue:#1648d8;--blue2:#2058e8;--blue3:#4878f8;--blue-pale:#e8edfb;
+  --accent:#0ea5e9;--accent2:#38bdf8;
+
+  /* Status */
+  --red:#b91c1c;--red2:#dc2626;--red3:#ef4444;--red-pale:#fef2f2;--red-border:#fecaca;
+  --amber:#b45309;--amber2:#d97706;--amber3:#f59e0b;--amber-pale:#fffbeb;--amber-border:#fde68a;
+  --grn:#15803d;--grn2:#16a34a;--grn3:#22c55e;--grn-pale:#f0fdf4;--grn-border:#bbf7d0;
+  --info:#0369a1;--info2:#0284c7;--info-pale:#f0f9ff;--info-border:#bae6fd;
+
+  /* Surface */
+  --bg:#f1f5fb;--bg2:#e4eaf6;--bg3:#dbe3f4;
+  --s:#ffffff;--s2:#f8fafd;--s3:#f0f4fa;
+  --bd:#dde5f0;--bd2:#c8d4e8;--bd3:#b0c0d8;
+
+  /* Text */
+  --t1:#0a1428;--t2:#1e3050;--t3:#4a6080;--t4:#7a90a8;--t5:#a8b8cc;
+
+  /* Shadows */
+  --sh0:0 1px 2px rgba(10,30,80,.05);
+  --sh1:0 1px 4px rgba(10,30,80,.08);
+  --sh2:0 4px 16px rgba(10,30,80,.10);
+  --sh3:0 8px 32px rgba(10,30,80,.14);
+  --sh4:0 16px 56px rgba(10,30,80,.18);
+
+  /* Geometry */
+  --r-sm:4px;--r:8px;--r-md:10px;--r-lg:14px;--r-xl:18px;
+
+  /* Sidebar */
+  --sb-w:220px;
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:var(--bg);color:var(--t2);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ═══════════════════════════════════════════
+   SCROLLBARS
+═══════════════════════════════════════════ */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--bd3)}
+
+/* ═══════════════════════════════════════════
+   TOP HEADER
+═══════════════════════════════════════════ */
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  height:52px;
+  background:var(--navy-deep);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;
+  box-shadow:0 2px 20px rgba(0,0,0,.3);
+}
+.hdr-logo{
+  width:var(--sb-w);min-width:var(--sb-w);
+  padding:0 20px;
+  display:flex;align-items:center;gap:10px;
+  border-right:1px solid rgba(255,255,255,.07);
+  height:100%;flex-shrink:0;
+}
+.hdr-logo-mark{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,var(--blue) 0%,var(--accent) 100%);
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;letter-spacing:-.3px;
+  flex-shrink:0;box-shadow:0 2px 8px rgba(22,72,216,.4);
+}
+.hdr-logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.hdr-logo-sub{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.5px;text-transform:uppercase;margin-top:1px}
+
+.hdr-center{flex:1;padding:0 20px;display:flex;align-items:center;gap:10px;min-width:0}
+.hdr-page-title{font-size:14px;font-weight:600;color:#fff;letter-spacing:-.2px}
+.hdr-breadcrumb{font-size:11px;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:4px}
+.hdr-breadcrumb span{color:rgba(255,255,255,.55)}
+.hdr-sep-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0}
+
+.hdr-controls{display:flex;align-items:center;gap:8px;padding:0 16px;border-left:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.hdr-fl{
+  padding:4px 10px;height:28px;
+  border:1px solid rgba(255,255,255,.15);border-radius:5px;
+  font-family:'Inter',sans-serif;font-size:11px;color:#fff;
+  background:rgba(255,255,255,.07);outline:none;cursor:pointer;
+}
+.hdr-fl option{background:#1e3a8a;color:#fff}
+.hdr-fl:focus{border-color:rgba(255,255,255,.4)}
+
+.period-btns{display:flex;background:rgba(255,255,255,.06);border-radius:6px;padding:2px;gap:1px}
+.pb{
+  padding:3px 10px;border-radius:4px;
+  font-size:10.5px;font-weight:600;
+  cursor:pointer;color:rgba(255,255,255,.45);
+  transition:.12s;font-family:'JetBrains Mono',monospace;
+  user-select:none;
+}
+.pb:hover{color:#fff;background:rgba(255,255,255,.08)}
+.pb.on{background:rgba(255,255,255,.18);color:#fff}
+
+.hdr-actions{display:flex;align-items:center;gap:6px;padding:0 14px;border-left:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.hdr-btn{
+  padding:4px 12px;border-radius:5px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid;transition:.12s;
+  font-family:'Inter',sans-serif;
+  display:inline-flex;align-items:center;gap:4px;
+  white-space:nowrap;
+}
+.hdr-btn-ghost{background:transparent;border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+.hdr-btn-ghost:hover{background:rgba(255,255,255,.1);color:#fff}
+.hdr-btn-green{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.35);color:#4ade80}
+.hdr-btn-green:hover{background:rgba(34,197,94,.25)}
+
+.hdr-status{display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0}
+.live-badge{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);
+  border-radius:20px;padding:3px 10px;
+  font-size:10px;font-weight:700;color:#4ade80;
+}
+.live-pulse{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{opacity:.7;box-shadow:0 0 0 4px rgba(74,222,128,0)}}
+.hdr-time{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#fff;white-space:nowrap}
+.hdr-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);white-space:nowrap}
+
+/* ═══════════════════════════════════════════
+   LAYOUT SHELL
+═══════════════════════════════════════════ */
+.shell{display:flex;height:100vh;padding-top:52px}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar{
+  width:var(--sb-w);min-width:var(--sb-w);
+  background:var(--navy-deep);
+  border-right:1px solid rgba(255,255,255,.06);
+  overflow-y:auto;
+  display:flex;flex-direction:column;
+  padding-bottom:20px;
+}
+.sidebar::-webkit-scrollbar{width:0}
+
+/* Red flags badge on sidebar */
+.sb-rf-pill{
+  margin:10px 12px 4px;
+  background:linear-gradient(90deg,rgba(220,38,38,.25),rgba(220,38,38,.12));
+  border:1px solid rgba(220,38,38,.35);
+  border-radius:8px;padding:9px 12px;
+  display:flex;align-items:center;gap:8px;
+  cursor:pointer;transition:.15s;
+}
+.sb-rf-pill:hover{background:linear-gradient(90deg,rgba(220,38,38,.35),rgba(220,38,38,.18))}
+.sb-rf-ico{font-size:14px;flex-shrink:0}
+.sb-rf-text{flex:1}
+.sb-rf-title{font-size:11px;font-weight:700;color:#fca5a5}
+.sb-rf-count{font-size:9.5px;color:rgba(252,165,165,.6);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.sb-rf-badge{
+  background:#dc2626;border-radius:20px;
+  padding:2px 7px;font-size:9px;font-weight:800;
+  color:#fff;font-family:'JetBrains Mono',monospace;
+  animation:badgepulse 2s ease-in-out infinite;
+}
+@keyframes badgepulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.6)}50%{box-shadow:0 0 0 6px rgba(220,38,38,0)}}
+
+.sb-group{margin-bottom:2px}
+.sb-group-label{
+  font-size:8.5px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:rgba(255,255,255,.22);
+  padding:12px 16px 4px;
+}
+.sb-item{
+  padding:7px 14px;
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:500;
+  color:rgba(255,255,255,.5);
+  cursor:pointer;transition:.12s;
+  border-left:2px solid transparent;
+  user-select:none;position:relative;
+}
+.sb-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05)}
+.sb-item.on{
+  color:#fff;
+  background:rgba(72,120,248,.15);
+  border-left-color:var(--blue3);
+  font-weight:600;
+}
+.sb-icon{
+  width:22px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.4);flex-shrink:0;transition:.12s;
+}
+.sb-item.on .sb-icon{background:rgba(72,120,248,.3);color:var(--blue3)}
+.sb-item:hover .sb-icon{color:rgba(255,255,255,.7)}
+.sb-badge{
+  margin-left:auto;font-size:9px;
+  padding:1px 6px;border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-weight:700;flex-shrink:0;
+}
+.sb-badge-red{background:rgba(220,38,38,.25);color:#fca5a5;border:1px solid rgba(220,38,38,.3)}
+.sb-badge-amb{background:rgba(217,119,6,.2);color:#fcd34d;border:1px solid rgba(217,119,6,.3)}
+.sb-badge-grn{background:rgba(22,163,74,.2);color:#86efac;border:1px solid rgba(22,163,74,.3)}
+.sb-divider{height:1px;background:rgba(255,255,255,.05);margin:6px 12px}
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════ */
+.main{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
+.main::-webkit-scrollbar{width:5px}
+.main::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+
+/* ═══════════════════════════════════════════
+   PAGES
+═══════════════════════════════════════════ */
+.page{display:none;padding:18px 22px 32px;animation:pgIn .18s ease}
+.page.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* ═══════════════════════════════════════════
+   RED FLAG ALERT BANNER (top of pages)
+═══════════════════════════════════════════ */
+.rf-banner{
+  border-radius:var(--r-md);padding:12px 16px;
+  margin-bottom:16px;
+  background:linear-gradient(90deg,var(--red-pale),#fff7f7);
+  border:1.5px solid var(--red-border);
+  display:flex;align-items:flex-start;gap:12px;
+  animation:flagIn .3s ease;
+  box-shadow:0 2px 12px rgba(220,38,38,.08);
+}
+@keyframes flagIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:none}}
+.rf-banner-ico{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,var(--red2),var(--red3));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(220,38,38,.3);
+}
+.rf-banner-body{flex:1}
+.rf-banner-title{font-size:12.5px;font-weight:700;color:var(--red);margin-bottom:3px}
+.rf-banner-desc{font-size:11.5px;color:var(--t3);line-height:1.5}
+.rf-banner-action{
+  padding:5px 14px;border-radius:6px;
+  background:var(--red2);color:#fff;
+  font-size:11px;font-weight:700;cursor:pointer;
+  border:none;transition:.12s;white-space:nowrap;align-self:flex-start;
+  font-family:'Inter',sans-serif;
+}
+.rf-banner-action:hover{background:var(--red)}
+
+/* Amber version */
+.rf-banner.amber{
+  background:linear-gradient(90deg,var(--amber-pale),#fffdf7);
+  border-color:var(--amber-border);
+  box-shadow:0 2px 12px rgba(217,119,6,.08);
+}
+.rf-banner.amber .rf-banner-ico{background:linear-gradient(135deg,var(--amber2),var(--amber3));box-shadow:0 2px 8px rgba(217,119,6,.3)}
+.rf-banner.amber .rf-banner-title{color:var(--amber)}
+.rf-banner.amber .rf-banner-action{background:var(--amber2)}
+.rf-banner.amber .rf-banner-action:hover{background:var(--amber)}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════════ */
+.sec{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.sec.mt{margin-top:20px}
+.sec-accent{
+  width:3px;height:14px;border-radius:2px;
+  background:linear-gradient(180deg,var(--blue),var(--blue3));
+  flex-shrink:0;
+}
+.sec-accent.red{background:linear-gradient(180deg,var(--red),var(--red3))}
+.sec-accent.amber{background:linear-gradient(180deg,var(--amber),var(--amber3))}
+.sec-accent.grn{background:linear-gradient(180deg,var(--grn),var(--grn3))}
+.sec-title{font-size:11.5px;font-weight:700;color:var(--t1);text-transform:uppercase;letter-spacing:.5px}
+.sec-rule{flex:1;height:1px;background:var(--bd)}
+.sec-note{font-size:10px;color:var(--t4);font-family:'JetBrains Mono',monospace}
+.sec-tabs{display:flex;gap:3px;margin-left:6px}
+.sec-tab{
+  padding:3px 10px;border-radius:4px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  border:1px solid var(--bd);color:var(--t3);
+  background:var(--s);transition:.12s;
+  font-family:'Inter',sans-serif;user-select:none;
+}
+.sec-tab:hover{border-color:var(--blue3);color:var(--blue)}
+.sec-tab.on{background:var(--blue-pale);border-color:var(--blue3);color:var(--blue)}
+
+/* ═══════════════════════════════════════════
+   PRODUCT CARDS — STRICT FIELD RULES
+═══════════════════════════════════════════ */
+.prod-grid{display:grid;gap:12px;margin-bottom:16px}
+.pg-3{grid-template-columns:repeat(3,1fr)}
+.pg-4{grid-template-columns:repeat(4,1fr)}
+.pg-2{grid-template-columns:repeat(2,1fr)}
+
+.pcard{
+  background:var(--s);
+  border:1.5px solid var(--bd);
+  border-radius:var(--r-lg);
+  overflow:hidden;cursor:pointer;
+  transition:.15s;box-shadow:var(--sh1);
+  position:relative;
+}
+.pcard:hover{box-shadow:var(--sh3);transform:translateY(-2px);border-color:var(--bd2)}
+.pcard.active{border-color:var(--blue3);box-shadow:0 0 0 3px rgba(72,120,248,.12),var(--sh2)}
+.pcard-top{height:4px;width:100%}
+
+/* Red flag indicator on card */
+.pcard-flag-dot{
+  position:absolute;top:16px;right:14px;
+  width:8px;height:8px;border-radius:50%;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+.pcard-flag-dot.red{background:var(--red3);box-shadow:0 0 0 0 rgba(239,68,68,.4)}
+.pcard-flag-dot.amber{background:var(--amber3);animation:pulsAmb 1.4s ease-in-out infinite}
+.pcard-flag-dot.grn{background:var(--grn3);animation:none}
+@keyframes pulsAmb{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.5)}50%{box-shadow:0 0 0 4px rgba(245,158,11,0)}}
+
+.pcard-hdr{padding:12px 14px 10px;display:flex;align-items:flex-start;justify-content:space-between}
+.pcard-name{font-size:13.5px;font-weight:700;color:var(--t1);letter-spacing:-.2px}
+.pcard-scope{
+  font-size:8.5px;font-family:'JetBrains Mono',monospace;
+  color:var(--t4);background:var(--s3);
+  padding:2px 7px;border-radius:10px;border:1px solid var(--bd);
+  margin-top:2px;display:inline-block;letter-spacing:.2px;
+}
+.pcard-body{padding:2px 14px 12px}
+
+/* Metric grid inside card */
+.pcard-metrics{display:grid;gap:7px 10px}
+.pm-2col{grid-template-columns:1fr 1fr}
+.pm-3col{grid-template-columns:1fr 1fr 1fr}
+.pm-1col{grid-template-columns:1fr}
+
+.pm{
+  background:var(--s3);border:1px solid var(--bd);
+  border-radius:var(--r);padding:8px 10px;
+  position:relative;overflow:hidden;
+}
+.pm-label{font-size:8px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--t4);margin-bottom:3px}
+.pm-value{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.4px;line-height:1}
+.pm-value.v-amber{color:var(--amber2)}
+.pm-value.v-red{color:var(--red2)}
+.pm-value.v-grn{color:var(--grn2)}
+.pm-value.v-blue{color:var(--blue)}
+.pm-hint{font-size:9.5px;color:var(--t4);margin-top:2px;display:flex;align-items:center;gap:3px}
+
+/* Aging row inside card */
+.aging-strip{
+  display:flex;gap:3px;margin-top:8px;
+  padding-top:8px;border-top:1px solid var(--bd);
+}
+.aging-strip-label{font-size:8px;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--t4);margin-bottom:6px}
+.aging-cell{
+  flex:1;border-radius:6px;padding:5px 6px;text-align:center;
+  border:1px solid;
+}
+.aging-cell.t0{background:#f0fdf4;border-color:#bbf7d0}
+.aging-cell.t1{background:#fffbeb;border-color:#fde68a}
+.aging-cell.t2{background:#fff7ed;border-color:#fed7aa}
+.aging-cell.t3{background:var(--red-pale);border-color:var(--red-border)}
+.aging-cell-label{font-size:7.5px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.3px}
+.aging-cell.t0 .aging-cell-label{color:var(--grn)}
+.aging-cell.t1 .aging-cell-label{color:var(--amber)}
+.aging-cell.t2 .aging-cell-label{color:#c2410c}
+.aging-cell.t3 .aging-cell-label{color:var(--red)}
+.aging-cell-val{font-size:12.5px;font-weight:800;margin-top:1px}
+.aging-cell.t0 .aging-cell-val{color:var(--grn2)}
+.aging-cell.t1 .aging-cell-val{color:var(--amber2)}
+.aging-cell.t2 .aging-cell-val{color:#ea580c}
+.aging-cell.t3 .aging-cell-val{color:var(--red2)}
+
+/* Card flag footer */
+.pcard-footer{
+  margin:0 14px 10px;padding:7px 10px;
+  border-radius:var(--r);border:1px solid;
+  display:flex;align-items:center;gap:7px;
+  font-size:10px;font-weight:500;
+}
+.pcf-red{background:var(--red-pale);border-color:var(--red-border)}
+.pcf-amber{background:var(--amber-pale);border-color:var(--amber-border)}
+.pcf-grn{background:var(--grn-pale);border-color:var(--grn-border)}
+.pcard-footer-ico{font-size:12px;flex-shrink:0}
+.pcard-footer-text{flex:1}
+.pcf-red .pcard-footer-text{color:var(--red)}
+.pcf-amber .pcard-footer-text{color:var(--amber)}
+.pcf-grn .pcard-footer-text{color:var(--grn)}
+.pcard-footer-link{
+  font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:4px;cursor:pointer;
+  white-space:nowrap;border:none;font-family:'Inter',sans-serif;
+}
+.pcf-red .pcard-footer-link{background:var(--red2);color:#fff}
+.pcf-amber .pcard-footer-link{background:var(--amber2);color:#fff}
+.pcf-grn .pcard-footer-link{background:var(--grn2);color:#fff}
+
+/* ═══════════════════════════════════════════
+   CARD / CONTAINER
+═══════════════════════════════════════════ */
+.card{background:var(--s);border:1.5px solid var(--bd);border-radius:var(--r-md);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh1)}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--bd);background:var(--s2)}
+.card-hdr-left{display:flex;flex-direction:column;gap:1px}
+.card-title{font-size:12.5px;font-weight:700;color:var(--t1)}
+.card-sub{font-size:10.5px;color:var(--t3)}
+.card-body{padding:13px 14px}
+.ctag{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:4px;font-weight:600;white-space:nowrap}
+.ctag-blue{background:var(--blue-pale);color:var(--blue)}
+.ctag-red{background:var(--red-pale);color:var(--red2)}
+.ctag-grn{background:var(--grn-pale);color:var(--grn)}
+.ctag-amber{background:var(--amber-pale);color:var(--amber)}
+
+/* ═══════════════════════════════════════════
+   KPI STRIP
+═══════════════════════════════════════════ */
+.kstrip{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.kblock{
+  flex:1;min-width:110px;
+  background:var(--s);border:1.5px solid var(--bd);
+  border-radius:var(--r-md);padding:11px 13px;
+  position:relative;overflow:hidden;
+}
+.kblock::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r-md) var(--r-md) 0 0}
+.kblock.kb::before{background:linear-gradient(90deg,var(--blue),var(--blue3))}
+.kblock.kr::before{background:linear-gradient(90deg,var(--red),var(--red3))}
+.kblock.ka::before{background:linear-gradient(90deg,var(--amber),var(--amber3))}
+.kblock.kg::before{background:linear-gradient(90deg,var(--grn),var(--grn3))}
+.kblock.kv::before{background:linear-gradient(90deg,#7c3aed,#a855f7)}
+.kblock.kt::before{background:linear-gradient(90deg,#0891b2,#06b6d4)}
+.kb-label{font-size:8.5px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--t4);margin-bottom:3px}
+.kb-val{font-size:22px;font-weight:800;color:var(--t1);letter-spacing:-.5px;line-height:1;margin-bottom:2px}
+.kb-val.sm{font-size:16px}
+.kb-hint{font-size:10px;color:var(--t3);display:flex;align-items:center;gap:5px}
+.kb-subs{display:flex;gap:10px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.kb-sub-lbl{font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+.kb-sub-val{font-size:12px;font-weight:600;color:var(--t2)}
+
+/* Delta chips */
+.chip{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:1.5px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace}
+.chip-up{background:var(--grn-pale);color:var(--grn)}
+.chip-dn{background:var(--red-pale);color:var(--red2)}
+.chip-warn{background:var(--amber-pale);color:var(--amber)}
+.chip-nt{background:var(--s3);color:var(--t3)}
+
+/* ═══════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════ */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--s3)}
+th{
+  padding:7px 11px;text-align:left;
+  font-family:'JetBrains Mono',monospace;
+  font-size:8.5px;letter-spacing:.5px;text-transform:uppercase;
+  color:var(--t3);border-bottom:2px solid var(--bd);
+  white-space:nowrap;font-weight:600;cursor:pointer;user-select:none;
+}
+th:hover{color:var(--blue)}
+th.tc,td.tc{text-align:center}
+th.tr,td.tr{text-align:right}
+td{padding:7px 11px;border-bottom:1px solid var(--bd);color:var(--t2);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s3)}
+.trow-crit td{background:rgba(220,38,38,.03)!important}
+.trow-crit:hover td{background:rgba(220,38,38,.06)!important}
+.er{cursor:pointer}
+.er:hover td{background:var(--blue-pale)!important}
+.er td:first-child::before{content:'▶';font-size:7px;color:var(--t4);margin-right:5px;display:inline-block;transition:transform .13s}
+.er.open td:first-child::before{transform:rotate(90deg);color:var(--blue)}
+.sr{display:none}
+.sr.open{display:table-row;animation:pgIn .14s ease}
+.sr td{padding:0;background:var(--bg2)!important}
+.sr-body{padding:10px 14px;border-left:3px solid var(--blue3)}
+.tbn{font-weight:600;color:var(--t1)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+
+/* ═══════════════════════════════════════════
+   BADGES
+═══════════════════════════════════════════ */
+.bdg{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.bdg-ok{background:var(--grn-pale);color:var(--grn);border:1px solid var(--grn-border)}
+.bdg-warn{background:var(--amber-pale);color:var(--amber);border:1px solid var(--amber-border)}
+.bdg-bad{background:var(--red-pale);color:var(--red2);border:1px solid var(--red-border)}
+.bdg-info{background:var(--blue-pale);color:var(--blue);border:1px solid #bfdbfe}
+.bdg-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px;flex-shrink:0}
+.bdg-dot.ok{background:var(--grn3)}
+.bdg-dot.warn{background:var(--amber3)}
+.bdg-dot.bad{background:var(--red3)}
+
+/* ═══════════════════════════════════════════
+   BARS
+═══════════════════════════════════════════ */
+.br{display:flex;align-items:center;gap:6px}
+.bt{height:5px;flex:1;background:var(--bg3);border-radius:3px;overflow:hidden;min-width:40px}
+.bf{height:100%;border-radius:3px;transition:width .3s ease}
+.bf-b{background:linear-gradient(90deg,var(--blue),var(--blue3))}
+.bf-g{background:linear-gradient(90deg,var(--grn),var(--grn3))}
+.bf-r{background:linear-gradient(90deg,var(--red),var(--red3))}
+.bf-a{background:linear-gradient(90deg,var(--amber),var(--amber3))}
+
+/* ═══════════════════════════════════════════
+   CHART BOX
+═══════════════════════════════════════════ */
+.cbox{position:relative;width:100%}
+.h120{height:120px}.h140{height:140px}.h160{height:160px}.h180{height:180px}.h200{height:200px}.h220{height:220px}
+
+/* ═══════════════════════════════════════════
+   GRID HELPERS
+═══════════════════════════════════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+.g6040{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:14px}
+.g7030{display:grid;grid-template-columns:7fr 3fr;gap:14px;margin-bottom:14px}
+.g4060{display:grid;grid-template-columns:2fr 3fr;gap:14px;margin-bottom:14px}
+
+/* ═══════════════════════════════════════════
+   RED FLAGS PAGE — ALERT CARDS
+═══════════════════════════════════════════ */
+.flag-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.flag-card{
+  border-radius:var(--r-md);padding:12px 14px;
+  border:1.5px solid;cursor:pointer;transition:.14s;
+  display:flex;flex-direction:column;gap:8px;
+}
+.flag-card:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.fc-H{background:var(--red-pale);border-color:var(--red-border)}
+.fc-M{background:var(--amber-pale);border-color:var(--amber-border)}
+.fc-L{background:var(--grn-pale);border-color:var(--grn-border)}
+.fc-AI{background:var(--info-pale);border-color:var(--info-border)}
+.flag-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.flag-card-ico{
+  width:34px;height:34px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+}
+.fc-H .flag-card-ico{background:linear-gradient(135deg,var(--red2),var(--red3));box-shadow:0 2px 8px rgba(220,38,38,.3)}
+.fc-M .flag-card-ico{background:linear-gradient(135deg,var(--amber2),var(--amber3));box-shadow:0 2px 8px rgba(217,119,6,.3)}
+.fc-L .flag-card-ico{background:linear-gradient(135deg,var(--grn2),var(--grn3));box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.fc-AI .flag-card-ico{background:linear-gradient(135deg,var(--info2),var(--accent));box-shadow:0 2px 8px rgba(14,165,233,.3)}
+.flag-sev{font-size:9px;font-weight:800;padding:2px 8px;border-radius:10px;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.fc-H .flag-sev{background:var(--red2);color:#fff}
+.fc-M .flag-sev{background:var(--amber2);color:#fff}
+.fc-L .flag-sev{background:var(--grn2);color:#fff}
+.fc-AI .flag-sev{background:var(--info2);color:#fff}
+.flag-card-body{flex:1}
+.flag-card-title{font-size:11.5px;font-weight:700;color:var(--t1);line-height:1.35;margin-bottom:3px}
+.flag-card-desc{font-size:10.5px;color:var(--t3);line-height:1.5}
+.flag-card-meta{font-size:9px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}
+.flag-card-actions{display:flex;gap:6px}
+.flag-action-btn{
+  flex:1;padding:6px 10px;border-radius:6px;
+  font-size:10.5px;font-weight:700;cursor:pointer;
+  border:none;font-family:'Inter',sans-serif;transition:.12s;
+}
+.fc-H .flag-action-btn{background:var(--red2);color:#fff}
+.fc-H .flag-action-btn:hover{background:var(--red)}
+.fc-M .flag-action-btn{background:var(--amber2);color:#fff}
+.fc-M .flag-action-btn:hover{background:var(--amber)}
+.fc-L .flag-action-btn{background:var(--grn2);color:#fff}
+.fc-AI .flag-action-btn{background:var(--info2);color:#fff}
+
+/* ═══════════════════════════════════════════
+   INSIGHTS PANEL
+═══════════════════════════════════════════ */
+.insights-panel{
+  background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy-mid) 100%);
+  border-radius:var(--r-lg);padding:14px 16px;color:#fff;
+  margin-bottom:14px;border:1px solid rgba(255,255,255,.06);
+}
+.ins-header{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.4);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ins-header::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.ins-item{
+  display:flex;align-items:flex-start;gap:9px;
+  background:rgba(255,255,255,.06);border-radius:8px;
+  padding:8px 10px;margin-bottom:6px;cursor:pointer;transition:.13s;
+  border:1px solid rgba(255,255,255,.05);
+}
+.ins-item:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.1)}
+.ins-item:last-child{margin-bottom:0}
+.ins-ico{font-size:14px;flex-shrink:0;margin-top:1px}
+.ins-body{flex:1}
+.ins-title{font-size:11px;font-weight:600;line-height:1.3;margin-bottom:1px}
+.ins-desc{font-size:9.5px;color:rgba(255,255,255,.55);line-height:1.4}
+.ins-action{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.4px;margin-top:4px}
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(6,14,46,.5);backdrop-filter:blur(6px);justify-content:center;align-items:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--s);border:1.5px solid var(--bd);border-radius:var(--r-xl);width:min(880px,94vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--sh4)}
+.modal-hdr{padding:14px 20px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px;background:var(--s2);border-radius:var(--r-xl) var(--r-xl) 0 0}
+.modal-title{font-size:14px;font-weight:700;color:var(--t1);flex:1}
+.modal-close{width:28px;height:28px;border-radius:7px;background:var(--bg2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--t3);border:1px solid var(--bd);transition:.12s}
+.modal-close:hover{background:var(--red-pale);color:var(--red2);border-color:var(--red-border)}
+.modal-body{padding:18px 20px;overflow-y:auto;flex:1}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end;background:var(--s2);border-radius:0 0 var(--r-xl) var(--r-xl)}
+.mbtn{padding:6px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid;transition:.12s;font-family:'Inter',sans-serif}
+.mbtn-p{background:var(--blue);color:#fff;border-color:var(--blue)}
+.mbtn-p:hover{background:var(--blue2)}
+.mbtn-s{background:var(--s);color:var(--t2);border-color:var(--bd2)}
+.mbtn-s:hover{background:var(--bg2)}
+.mbtn-red{background:var(--red2);color:#fff;border-color:var(--red2)}
+.mbtn-red:hover{background:var(--red)}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+.fade-in{animation:pgIn .2s ease}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
+<header class="hdr">
+  <div class="hdr-logo">
+    <div class="hdr-logo-mark">NP</div>
+    <div>
+      <div class="hdr-logo-text">NACH</div>
+      <div class="hdr-logo-sub">Operations · Model 2.0</div>
+    </div>
+  </div>
+
+  <div class="hdr-center">
+    <div class="hdr-page-title" id="hdrTitle">Summary Overview</div>
+    <div class="hdr-sep-dot"></div>
+    <div class="hdr-breadcrumb"><span id="hdrBreadcrumb">All Products</span></div>
+  </div>
+
+  <div class="hdr-controls">
+    <select class="hdr-fl" id="fBank">
+      <option>All Banks</option><option>SBIN</option><option>HDFC</option><option>ICIC</option>
+      <option>PUNB</option><option>BARB</option><option>UTIB</option><option>IPPB</option>
+      <option>BKID</option><option>IDIB</option><option>CNRB</option>
+    </select>
+    <div class="period-btns" id="gPer">
+      <div class="pb on" onclick="swPer(this,'gPer')">FTD</div>
+      <div class="pb" onclick="swPer(this,'gPer')">MTD</div>
+      <div class="pb" onclick="swPer(this,'gPer')">YTD</div>
+      <div class="pb" onclick="swPer(this,'gPer')">Custom</div>
+    </div>
+  </div>
+
+  <div class="hdr-actions">
+    <button class="hdr-btn hdr-btn-ghost" onclick="exp('xlsx')">⬇ Excel</button>
+    <button class="hdr-btn hdr-btn-green" onclick="exp('pdf')">⬇ PDF</button>
+  </div>
+
+  <div class="hdr-status">
+    <div class="live-badge"><div class="live-pulse"></div>LIVE</div>
+    <div>
+      <div class="hdr-time" id="hTime"></div>
+      <div class="hdr-date" id="hDate"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════
+     SHELL
+═══════════════════════════════════════ -->
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+
+  <!-- Red flags pill at top of sidebar -->
+  <div class="sb-rf-pill" onclick="goPage('redflags','🚩 Red Flags','Red Flags & Alerts')">
+    <div class="sb-rf-ico">🚩</div>
+    <div class="sb-rf-text">
+      <div class="sb-rf-title">Active Red Flags</div>
+      <div class="sb-rf-count">5 High · 3 Medium — Action Required</div>
+    </div>
+    <div class="sb-rf-badge" id="rfSbBadge">8</div>
+  </div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Overview</div>
+    <div class="sb-item on" id="sb-summary" onclick="goPage('summary','◈ Summary Overview','All Products')">
+      <div class="sb-icon">◈</div>Summary Overview
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">APB</div>
+    <div class="sb-item" id="sb-apb" onclick="goPage('apb','APB','Aadhaar Payment Bridge')">
+      <div class="sb-icon">⊙</div>APB
+      <span class="sb-badge sb-badge-red">⚠</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">ACH</div>
+    <div class="sb-item" id="sb-achcr" onclick="goPage('achcr','ACH CR','ACH Credit')">
+      <div class="sb-icon">↑</div>ACH CR
+    </div>
+    <div class="sb-item" id="sb-achdr" onclick="goPage('achdr','ACH DR','ACH Debit')">
+      <div class="sb-icon">↓</div>ACH DR
+      <span class="sb-badge sb-badge-amb">⚠</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">AV</div>
+    <div class="sb-item" id="sb-av" onclick="goPage('av','AV','Account Validation')">
+      <div class="sb-icon">✓</div>AV
+      <span class="sb-badge sb-badge-amb">⚠</span>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Mandates</div>
+    <div class="sb-item" id="sb-emandate" onclick="goPage('emandate','eMandate','eMandate — ONMAGS')">
+      <div class="sb-icon">↺</div>eMandate
+      <span class="sb-badge sb-badge-amb">⚠</span>
+    </div>
+    <div class="sb-item" id="sb-mms" onclick="goPage('mms','MMS','Mandate Management System')">
+      <div class="sb-icon">⊞</div>MMS
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">API & BASE</div>
+    <div class="sb-item" id="sb-api" onclick="goPage('api','NACH API','NACH API Services')">
+      <div class="sb-icon">⌁</div>NACH API
+      <span class="sb-badge sb-badge-red">⚠</span>
+    </div>
+    <div class="sb-item" id="sb-base" onclick="goPage('base','BASE','Non-Financial BASE')">
+      <div class="sb-icon">⌇</div>BASE
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-group">
+    <div class="sb-group-label">Flags & Reports</div>
+    <div class="sb-item" id="sb-redflags" onclick="goPage('redflags','🚩 Red Flags','Red Flags & Alerts')">
+      <div class="sb-icon">⚠</div>Red Flags
+      <span class="sb-badge sb-badge-red" id="rfSbCount">8</span>
+    </div>
+    <div class="sb-item" id="sb-bankwise" onclick="goPage('bankwise','Bank-wise','All Products × All Banks')">
+      <div class="sb-icon">🏦</div>Bank-wise
+    </div>
+    <div class="sb-item" id="sb-letters" onclick="goPage('letters','Performance Letters','Generate & Export')">
+      <div class="sb-icon">✉</div>Perf. Letters
+    </div>
+  </div>
+
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main" id="mainArea">
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: SUMMARY OVERVIEW
+════════════════════════════════════════════════ -->
+<div class="page on" id="page-summary">
+
+  <!-- Top red flag banner -->
+  <div class="rf-banner">
+    <div class="rf-banner-ico">🔴</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">5 Critical Issues Require Immediate Attention Today</div>
+      <div class="rf-banner-desc">APB Pendency Aging T+2 elevated across 12 banks · ACH DR T+1 SLA breached (4 banks) · AV Expired rising ↑6% · eMandate Aadhaar Rejected surge · NACH API Technical Decline spike at PNB</div>
+    </div>
+    <button class="rf-banner-action" onclick="goPage('redflags','🚩 Red Flags','Red Flags & Alerts')">View All Flags →</button>
+  </div>
+
+  <!-- APB + ACH CR + ACH DR -->
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">APB · ACH CR · ACH DR</div><div class="sec-rule"></div><div class="sec-note">Pendency · Pendency Aging (T+0→T+3+) · Deemed — Click card → drill-down</div></div>
+  <div class="prod-grid pg-3" id="grid-apb-ach"></div>
+
+  <!-- AV + eMandate + MMS -->
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">AV · eMandate · MMS</div><div class="sec-rule"></div><div class="sec-note">AV: Expired only · eMandate/MMS: Initiated · Accepted · Rejected</div></div>
+  <div class="prod-grid pg-3" id="grid-av-em"></div>
+
+  <!-- Charts + Insights -->
+  <div class="g7030">
+    <div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-left"><div class="card-title">Pendency — MTD Day-wise Trend</div><div class="card-sub">APB · ACH CR · ACH DR (Pendency field only)</div></div>
+          <span class="ctag ctag-blue">MTD</span>
+        </div>
+        <div class="card-body"><div class="cbox h180"><canvas id="summPendChart"></canvas></div></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr">
+          <div class="card-hdr-left"><div class="card-title">Deemed — MTD Day-wise Trend</div><div class="card-sub">APB · ACH CR · ACH DR (Deemed field only)</div></div>
+          <span class="ctag ctag-amber">MTD</span>
+        </div>
+        <div class="card-body"><div class="cbox h140"><canvas id="summDeemedChart"></canvas></div></div>
+      </div>
+    </div>
+    <div class="insights-panel">
+      <div class="ins-header">⚡ Top Issues Today</div>
+      <div id="insightList"></div>
+    </div>
+  </div>
+
+  <!-- Period-over-Period -->
+  <div class="sec mt"><div class="sec-accent"></div><div class="sec-title">Period-over-Period Comparison</div><div class="sec-rule"></div><div class="sec-note">FTD vs MTD vs YTD — product-specific fields only</div></div>
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-hdr-left"><div class="card-title">All Products — PoP Table</div><div class="card-sub">Only fields applicable per product are shown · N/A = field not defined for this product</div></div>
+      <span class="ctag ctag-blue">PoP</span>
+    </div>
+    <div class="tw">
+      <table>
+        <thead><tr>
+          <th>Product</th>
+          <th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">Δ Pendency</th>
+          <th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">Δ Deemed</th>
+          <th class="tr">Expired (FTD)</th><th class="tr">Expired (MTD)</th><th class="tc">Δ Expired</th>
+          <th class="tc">Aging T+1</th><th class="tc">Aging T+2</th><th class="tc">Aging T+3+</th>
+          <th class="tc">Status</th>
+        </tr></thead>
+        <tbody id="popBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: APB
+     Fields: Pendency · Pendency Aging · Deemed
+════════════════════════════════════════════════ -->
+<div class="page" id="page-apb">
+  <div class="rf-banner">
+    <div class="rf-banner-ico">🔴</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">APB — Pendency Aging T+2 elevated · 12 banks above threshold</div>
+      <div class="rf-banner-desc">Pendency Aging T+2: 10,000 · T+3+: 2,440 across 12 destination banks. Deemed accumulation risk — items may become uncollectable if not acted upon within SLA window.</div>
+    </div>
+    <button class="rf-banner-action" onclick="openModal('letter','APB')">Draft Letter →</button>
+  </div>
+
+  <div class="sec"><div class="sec-accent red"></div><div class="sec-title">APB — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div><div class="sec-note">No Success% / Failure% — per data definition</div></div>
+
+  <div class="kstrip">
+    <div class="kblock ka"><div class="kb-label">Pendency</div><div class="kb-val">1,24,832</div><div class="kb-hint"><span class="chip chip-warn">↑ 2.1%</span> vs prev day</div><div class="kb-subs"><div><div class="kb-sub-lbl">MTD</div><div class="kb-sub-val">28.4L</div></div><div><div class="kb-sub-lbl">YTD</div><div class="kb-sub-val">3.2Cr</div></div></div></div>
+    <div class="kblock kv"><div class="kb-label">Deemed</div><div class="kb-val">8,240</div><div class="kb-hint"><span class="chip chip-up">↓ 12%</span> vs prev day</div><div class="kb-subs"><div><div class="kb-sub-lbl">MTD</div><div class="kb-sub-val">1.82L</div></div><div><div class="kb-sub-lbl">YTD</div><div class="kb-sub-val">21.4L</div></div></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+1</div><div class="kb-val">34,210</div><div class="kb-hint"><span class="chip chip-warn">SLA Watch</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+2</div><div class="kb-val">10,000</div><div class="kb-hint"><span class="chip chip-dn">⚠ Escalate</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+3+</div><div class="kb-val">2,440</div><div class="kb-hint"><span class="chip chip-dn">🔴 Critical</span></div></div>
+  </div>
+
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Pendency — MTD Day-wise</div><div class="card-sub">April 2026</div></div><span class="ctag ctag-blue">MTD</span></div><div class="card-body"><div class="cbox h180"><canvas id="apbPendMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Deemed — MTD Day-wise</div><div class="card-sub">April 2026</div></div><span class="ctag ctag-amber">MTD</span></div><div class="card-body"><div class="cbox h180"><canvas id="apbDeemedMtd"></canvas></div></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Pendency Aging Distribution</div></div><div class="card-body"><div class="cbox h140"><canvas id="apbAgingBar"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">YTD Month-wise — Pendency &amp; Deemed</div><div class="card-sub">Jan–Apr 2026</div></div><span class="ctag ctag-amber">YTD</span></div><div class="card-body"><div class="cbox h140"><canvas id="apbYtd"></canvas></div></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-hdr-left"><div class="card-title">Bank-wise APB — Pendency · Pendency Aging · Deemed</div><div class="card-sub">Sorted by T+2+ descending · Click row → aging detail · Red rows = SLA breached</div></div>
+      <div style="display:flex;gap:6px">
+        <span class="ctag ctag-red">Layer 3 Drill</span>
+        <button style="padding:4px 10px;background:var(--red2);color:#fff;border:none;border-radius:5px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif" onclick="openModal('letter','APB')">✉ Bulk Letter</button>
+      </div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>IFN Code</th><th>Bank Name</th>
+        <th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th>
+        <th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th>
+        <th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th>
+        <th class="tc">Trend</th><th class="tc">Flag</th>
+      </tr></thead>
+      <tbody id="apbBankTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: ACH CR
+     Fields: Pendency · Pendency Aging · Deemed
+════════════════════════════════════════════════ -->
+<div class="page" id="page-achcr">
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">ACH CR — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div><div class="sec-note">No Success% / Failure% — per data definition</div></div>
+  <div class="kstrip">
+    <div class="kblock ka"><div class="kb-label">Pendency</div><div class="kb-val">82,000</div><div class="kb-hint"><span class="chip chip-warn">↑ 1.4%</span></div><div class="kb-subs"><div><div class="kb-sub-lbl">MTD</div><div class="kb-sub-val">18.2L</div></div></div></div>
+    <div class="kblock kv"><div class="kb-label">Deemed</div><div class="kb-val">4,120</div><div class="kb-hint"><span class="chip chip-up">↓ 8%</span></div><div class="kb-subs"><div><div class="kb-sub-lbl">MTD</div><div class="kb-sub-val">92K</div></div></div></div>
+    <div class="kblock kb"><div class="kb-label">Pendency Aging T+0</div><div class="kb-val">58,000</div></div>
+    <div class="kblock ka"><div class="kb-label">Pendency Aging T+1</div><div class="kb-val">18,200</div><div class="kb-hint"><span class="chip chip-warn">Watch</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+2</div><div class="kb-val">4,800</div><div class="kb-hint"><span class="chip chip-dn">Escalate</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+3+</div><div class="kb-val">1,000</div><div class="kb-hint"><span class="chip chip-dn">Critical</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Pendency — MTD Day-wise</div></div><div class="card-body"><div class="cbox h180"><canvas id="crPendMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Deemed — MTD Day-wise</div></div><div class="card-body"><div class="cbox h180"><canvas id="crDeemedMtd"></canvas></div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Bank-wise ACH CR — Pendency · Pendency Aging · Deemed</div><div class="card-sub">Click row → aging detail · Sorted by T+2+ descending</div></div><span class="ctag ctag-red">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>IFN Code</th><th>Bank Name</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">Flag</th></tr></thead>
+      <tbody id="crBankTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: ACH DR
+════════════════════════════════════════════════ -->
+<div class="page" id="page-achdr">
+  <div class="rf-banner amber">
+    <div class="rf-banner-ico">🟡</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">ACH DR — 12 Banks Pending T+1 · 4 Banks SLA Breached</div>
+      <div class="rf-banner-desc">Pendency Aging T+1: 24,000 · T+2: 8,560 · T+3+: 2,440. Deemed accumulation risk. Auto-escalation triggered for 4 banks. SLA window expires at 6:00 PM today.</div>
+    </div>
+    <button class="rf-banner-action" style="background:var(--amber2)" onclick="openModal('letter','ACH DR')">Send Reminder →</button>
+  </div>
+  <div class="sec"><div class="sec-accent amber"></div><div class="sec-title">ACH DR — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div><div class="sec-note">No Success% / Failure% — per data definition</div></div>
+  <div class="kstrip">
+    <div class="kblock ka"><div class="kb-label">Pendency</div><div class="kb-val">1,24,000</div><div class="kb-hint"><span class="chip chip-warn">↑ 2.8%</span></div><div class="kb-subs"><div><div class="kb-sub-lbl">MTD</div><div class="kb-sub-val">27.8L</div></div></div></div>
+    <div class="kblock kv"><div class="kb-label">Deemed</div><div class="kb-val">8,840</div><div class="kb-hint"><span class="chip chip-up">↓ 5%</span></div></div>
+    <div class="kblock kb"><div class="kb-label">Pendency Aging T+0</div><div class="kb-val">89,000</div></div>
+    <div class="kblock ka"><div class="kb-label">Pendency Aging T+1</div><div class="kb-val">24,000</div><div class="kb-hint"><span class="chip chip-warn">12 banks</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+2</div><div class="kb-val">8,560</div><div class="kb-hint"><span class="chip chip-dn">Escalate</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Pendency Aging T+3+</div><div class="kb-val">2,440</div><div class="kb-hint"><span class="chip chip-dn">Critical</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Pendency — MTD Day-wise</div></div><div class="card-body"><div class="cbox h180"><canvas id="drPendMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Pendency Aging Distribution</div></div><div class="card-body"><div class="cbox h180"><canvas id="drAgingBar"></canvas></div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Bank-wise ACH DR — Pendency · Pendency Aging · Deemed</div><div class="card-sub">Sorted by T+2+ descending · Red = SLA breached · Click row to expand</div></div><span class="ctag ctag-red">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>IFN Code</th><th>Bank Name</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">SLA Status</th><th class="tc">Action</th></tr></thead>
+      <tbody id="drBankTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: AV
+     Fields: Expired ONLY
+════════════════════════════════════════════════ -->
+<div class="page" id="page-av">
+  <div class="rf-banner amber">
+    <div class="rf-banner-ico">🟡</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">AV — Expired rising ↑6% FTD · MTD above threshold of 60,000</div>
+      <div class="rf-banner-desc">Expired (FTD): 3,180 · Expired (MTD): 64,200 · Expired (YTD): 7.1L. MTD exceeds 60,000 threshold. No Pendency or Success/Failure fields defined for AV.</div>
+    </div>
+    <button class="rf-banner-action" style="background:var(--amber2)">Advisory →</button>
+  </div>
+  <div class="sec"><div class="sec-accent amber"></div><div class="sec-title">AV — Expired</div><div class="sec-rule"></div><div class="sec-note">Expired only · No Success / Failure / Pendency defined for AV</div></div>
+  <div class="kstrip">
+    <div class="kblock kr"><div class="kb-label">Expired (FTD)</div><div class="kb-val">3,180</div><div class="kb-hint"><span class="chip chip-warn">↑ 6% vs prev day</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Expired (MTD)</div><div class="kb-val">64,200</div><div class="kb-hint"><span class="chip chip-dn">↑ 4.2% vs prev mth</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Expired (YTD)</div><div class="kb-val">7.1L</div><div class="kb-hint"><span class="chip chip-warn">Monitor</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Expired — MTD Day-wise Trend</div><div class="card-sub">April 2026</div></div><span class="ctag ctag-blue">MTD</span></div><div class="card-body"><div class="cbox h200"><canvas id="avExpMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Expired — YTD Month-wise Trend</div><div class="card-sub">Jan–Apr 2026</div></div><span class="ctag ctag-amber">YTD</span></div><div class="card-body"><div class="cbox h200"><canvas id="avExpYtd"></canvas></div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Bank-wise AV — Expired</div><div class="card-sub">Sorted by MTD Expired descending · Expired only — no other fields</div></div><span class="ctag ctag-red">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>IFN Code</th><th>Bank Name</th><th class="tr">Expired (FTD)</th><th class="tr">Expired (MTD)</th><th class="tr">Expired (YTD)</th><th class="tc">Δ vs Prev Mth</th><th class="tc">Δ vs Prev Yr</th><th class="tc">Trend</th><th class="tc">Flag</th></tr></thead>
+      <tbody id="avBankTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: eMANDATE
+     Fields: Initiated · Accepted · Rejected
+════════════════════════════════════════════════ -->
+<div class="page" id="page-emandate">
+  <div class="rf-banner amber">
+    <div class="rf-banner-ico">🟡</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">eMandate — Aadhaar mode: Rejected count 8,19,611 · Aadhaar not linked to debtor account = top reason</div>
+      <div class="rf-banner-desc">Aadhaar variant Rejected growing month-on-month. Internet Banking: 64 banks live. Debit Card: 183 banks live. Aadhaar: 212 banks live. E-Sign: 467 banks live.</div>
+    </div>
+    <button class="rf-banner-action" style="background:var(--amber2)">Escalate →</button>
+  </div>
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">eMandate — Initiated · Accepted · Rejected</div><div class="sec-rule"></div><div class="sec-note">Authentication mode-wise · 5 modes</div></div>
+  <div class="kstrip">
+    <div class="kblock kb"><div class="kb-label">Initiated</div><div class="kb-val">3,84,210</div><div class="kb-hint"><span class="chip chip-up">↑ 4.2%</span></div></div>
+    <div class="kblock kg"><div class="kb-label">Accepted</div><div class="kb-val">3,35,720</div><div class="kb-hint"><span class="chip chip-up">↑ 3.8%</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Rejected</div><div class="kb-val">48,490</div><div class="kb-hint"><span class="chip chip-dn">↑ 2.1%</span></div></div>
+    <div class="kblock ka"><div class="kb-label">Pending</div><div class="kb-val">8,420</div><div class="kb-hint"><span class="chip chip-warn">Queue</span></div></div>
+  </div>
+  <div class="g6040">
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Authentication Mode-wise — Initiated · Accepted · Rejected</div><div class="card-sub">Internet Banking · Debit Card · Aadhaar · Simplified Aadhaar · E-Sign</div></div><span class="ctag ctag-blue">Mode-wise</span></div>
+      <div class="tw"><table>
+        <thead><tr><th>Auth Mode</th><th class="tc">Live Banks</th><th class="tr">Initiated</th><th class="tr">Accepted</th><th class="tr">Rejected</th><th class="tc">Accepted%</th><th class="tc">Rejected%</th><th class="tc">Top Rejection Reason</th></tr></thead>
+        <tbody id="emModeTbody"></tbody>
+      </table></div>
+    </div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Rejected — Reason Distribution</div></div><div class="card-body"><div class="cbox h200"><canvas id="emRejPie"></canvas></div></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Initiated · Accepted · Rejected — MTD Day-wise</div></div><div class="card-body"><div class="cbox h160"><canvas id="emMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">YTD Month-wise — Accepted · Rejected</div></div><div class="card-body"><div class="cbox h160"><canvas id="emYtd"></canvas></div></div></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: MMS
+     Fields: Initiated · Accepted · Rejected
+════════════════════════════════════════════════ -->
+<div class="page" id="page-mms">
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">MMS — Initiated · Accepted · Rejected</div><div class="sec-rule"></div><div class="sec-note">Physical mandates · 12-month trend</div></div>
+  <div class="kstrip">
+    <div class="kblock kb"><div class="kb-label">Initiated</div><div class="kb-val">2,14,000</div><div class="kb-hint"><span class="chip chip-up">↑ 1.1%</span></div></div>
+    <div class="kblock kg"><div class="kb-label">Accepted</div><div class="kb-val">1,89,176</div><div class="kb-hint"><span class="chip chip-up">↑ 0.8%</span></div></div>
+    <div class="kblock kr"><div class="kb-label">Rejected</div><div class="kb-val">24,824</div><div class="kb-hint"><span class="chip chip-dn">↑ 2.4%</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Initiated · Accepted · Rejected — MTD Day-wise</div></div><div class="card-body"><div class="cbox h200"><canvas id="mmsMtd"></canvas></div></div></div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Top Rejection Reasons — MMS</div><div class="card-sub">MTD top drivers</div></div><span class="ctag ctag-red">Rejection Analysis</span></div>
+      <div class="card-body" id="mmsRejList"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: NACH API
+════════════════════════════════════════════════ -->
+<div class="page" id="page-api">
+  <div class="rf-banner">
+    <div class="rf-banner-ico">🔴</div>
+    <div class="rf-banner-body">
+      <div class="rf-banner-title">NACH API — PUNB Technical Failure% spike: 22.4% vs avg 6.0%</div>
+      <div class="rf-banner-desc">Connection Refused (XXX) = 91% of failures at PUNB. CBS-API endpoint unreachable since 09:15 AM. Request Count continues growing while Success Count declining.</div>
+    </div>
+    <button class="rf-banner-action" onclick="openModal('letter','NACH API')">Draft Letter →</button>
+  </div>
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">NACH API — Request Count · Success Count · Failure Count · Technical Failure% · Avg Response Time</div><div class="sec-rule"></div></div>
+  <div class="kstrip">
+    <div class="kblock kb"><div class="kb-label">Request Count (FTD)</div><div class="kb-val">84.2L</div><div class="kb-hint"><span class="chip chip-up">↑ 4.1%</span></div></div>
+    <div class="kblock kg"><div class="kb-label">Success Count</div><div class="kb-val">74.8L</div><div class="kb-hint">Success%: 88.8%</div></div>
+    <div class="kblock kr"><div class="kb-label">Failure Count (Technical)</div><div class="kb-val">5.4L</div><div class="kb-hint"><span class="chip chip-dn">Technical Failure%: 6.4%</span></div></div>
+    <div class="kblock ka"><div class="kb-label">Avg Response Time</div><div class="kb-val sm">248ms</div><div class="kb-hint">Peak Load: 1,240ms</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Request Count · Success Count · Failure Count — MTD</div></div><span class="ctag ctag-blue">MTD</span></div><div class="card-body"><div class="cbox h200"><canvas id="apiMtd"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Technical Failure% — MTD Trend</div></div><span class="ctag ctag-red">Technical Failure</span></div><div class="card-body"><div class="cbox h200"><canvas id="apiTFTrend"></canvas></div></div></div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Bank-wise NACH API — Request Count · Success Count · Failure Count · Technical Failure% · Avg Response Time</div><div class="card-sub">Click row → failure breakdown</div></div><span class="ctag ctag-red">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>IFN Code</th><th>Bank Name</th><th class="tr">Request Count</th><th class="tr">Success Count</th><th class="tr">Failure Count</th><th class="tc">Success%</th><th class="tc">Technical Failure%</th><th class="tc">Timeout%</th><th class="tc">Avg Response Time</th><th class="tc">Peak Load Trend</th><th class="tc">Flag</th></tr></thead>
+      <tbody id="apiBankTbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: BASE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-base">
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">BASE — Non-Financial Services</div><div class="sec-rule"></div></div>
+  <div class="kstrip">
+    <div class="kblock kb"><div class="kb-label">Total Requests (FTD)</div><div class="kb-val">42.4L</div></div>
+    <div class="kblock kg"><div class="kb-label">Success Count</div><div class="kb-val">40.2L</div><div class="kb-hint">Success%: 94.8%</div></div>
+    <div class="kblock kr"><div class="kb-label">Failure Count</div><div class="kb-val">2.2L</div></div>
+    <div class="kblock ka"><div class="kb-label">Technical Failure%</div><div class="kb-val sm">5.2%</div></div>
+  </div>
+  <div class="card"><div class="card-hdr"><div class="card-title">BASE — MTD Day-wise Trend</div></div><div class="card-body"><div class="cbox h200"><canvas id="baseMtd"></canvas></div></div></div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: RED FLAGS
+════════════════════════════════════════════════ -->
+<div class="page" id="page-redflags">
+  <div class="sec"><div class="sec-accent red"></div><div class="sec-title" style="color:var(--red2)">Active Red Flags &amp; Exception Alerts</div><div class="sec-rule"></div>
+    <div class="sec-tabs" id="rfTabGrp">
+      <div class="sec-tab on" onclick="swRF('all',this)">All (8)</div>
+      <div class="sec-tab" onclick="swRF('H',this)">🔴 High (5)</div>
+      <div class="sec-tab" onclick="swRF('M',this)">🟡 Medium (3)</div>
+      <div class="sec-tab" onclick="swRF('AI',this)">🤖 AI Alerts (2)</div>
+    </div>
+  </div>
+  <div class="flag-cards" id="flagGrid"></div>
+
+  <div class="g2">
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Pendency — Products Exceeding SLA</div><div class="card-sub">APB · ACH CR · ACH DR (Pendency field only)</div></div><span class="ctag ctag-red">SLA Breach</span></div>
+      <div class="card-body" id="rfPendList"></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">Deemed — Abnormal Accumulation</div><div class="card-sub">APB · ACH CR · ACH DR (Deemed field only)</div></div><span class="ctag ctag-amber">Alert</span></div>
+      <div class="card-body" id="rfDeemedList"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-hdr-left"><div class="card-title">SLA / Threshold Breach Log</div><div class="card-sub">Active breaches — current period — field-specific per product</div></div><span class="ctag ctag-red">Active</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Product</th><th>Bank</th><th class="tc">Field</th><th class="tc">Threshold</th><th class="tc">Actual</th><th class="tc">Breach Since</th><th class="tc">Duration</th><th class="tc">Severity</th><th class="tc">Action</th></tr></thead>
+      <tbody id="rfSLATbody"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: BANK-WISE
+════════════════════════════════════════════════ -->
+<div class="page" id="page-bankwise">
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">Bank-wise Performance Matrix</div><div class="sec-rule"></div><div class="sec-note">Applicable fields per product only — no cross-product field mixing</div></div>
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-hdr-left"><div class="card-title">Bank × Product Matrix</div><div class="card-sub">APB: Pendency/Aging/Deemed · ACH: Pendency/Aging/Deemed · AV: Expired · eMandate/MMS: Initiated/Accepted/Rejected</div></div>
+      <span class="ctag ctag-blue">Full Matrix</span>
+    </div>
+    <div class="tw"><table>
+      <thead>
+        <tr>
+          <th rowspan="2">IFN</th><th rowspan="2">Bank Name</th>
+          <th colspan="2" class="tc" style="border-bottom:1px solid var(--bd)">APB</th>
+          <th colspan="2" class="tc" style="border-bottom:1px solid var(--bd)">ACH CR</th>
+          <th colspan="2" class="tc" style="border-bottom:1px solid var(--bd)">ACH DR</th>
+          <th class="tc" rowspan="2">AV<br>Expired</th>
+          <th colspan="3" class="tc" style="border-bottom:1px solid var(--bd)">eMandate</th>
+          <th rowspan="2" class="tc">Flag</th>
+        </tr>
+        <tr>
+          <th class="tr">Pendency</th><th class="tc">Deemed</th>
+          <th class="tr">Pendency</th><th class="tc">Deemed</th>
+          <th class="tr">Pendency</th><th class="tc">Deemed</th>
+          <th class="tr">Initiated</th><th class="tr">Accepted</th><th class="tc">Rejected</th>
+        </tr>
+      </thead>
+      <tbody id="bkTbody"></tbody>
+    </table></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="card-hdr"><div class="card-title">Pendency — Top 5 Banks MTD Trend</div></div><div class="card-body"><div class="cbox h180"><canvas id="bkPendTrend"></canvas></div></div></div>
+    <div class="card"><div class="card-hdr"><div class="card-title">Deemed — Bank-wise MTD Comparison</div></div><div class="card-body"><div class="cbox h180"><canvas id="bkDeemedComp"></canvas></div></div></div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     PAGE: PERFORMANCE LETTERS
+════════════════════════════════════════════════ -->
+<div class="page" id="page-letters">
+  <div class="sec"><div class="sec-accent"></div><div class="sec-title">Performance Letters</div><div class="sec-rule"></div><div class="sec-note">Auto-generated · Giridhar G.M. · Chief — Customer Success</div></div>
+  <div class="g4" style="margin-bottom:16px">
+    <div class="card" style="cursor:pointer;text-align:center;padding:20px" onclick="openModal('letter','APB')">
+      <div style="font-size:28px;margin-bottom:8px">📬</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px">APB — Pendency Aging</div>
+      <div style="font-size:10.5px;color:var(--t3)">T+2 breach letter</div>
+    </div>
+    <div class="card" style="cursor:pointer;text-align:center;padding:20px" onclick="openModal('letter','ACH DR')">
+      <div style="font-size:28px;margin-bottom:8px">📬</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px">ACH DR — T+1 Breach</div>
+      <div style="font-size:10.5px;color:var(--t3)">SLA reminder</div>
+    </div>
+    <div class="card" style="cursor:pointer;text-align:center;padding:20px" onclick="openModal('letter','NACH API')">
+      <div style="font-size:28px;margin-bottom:8px">📬</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px">NACH API — TD Spike</div>
+      <div style="font-size:10.5px;color:var(--t3)">Technical failure letter</div>
+    </div>
+    <div class="card" style="cursor:pointer;text-align:center;padding:20px" onclick="openModal('letter','AV')">
+      <div style="font-size:28px;margin-bottom:8px">📬</div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:4px">AV — Expired Rising</div>
+      <div style="font-size:10.5px;color:var(--t3)">Advisory circular</div>
+    </div>
+  </div>
+</div>
+
+
+</main>
+</div><!-- /shell -->
+
+<!-- ═══════════════════════════════════
+     MODAL
+═══════════════════════════════════════ -->
+<div class="modal-overlay" id="mainModal">
+  <div class="modal">
+    <div class="modal-hdr"><div class="modal-title" id="modalTitle">Performance Letter</div><div class="modal-close" onclick="closeModal()">✕</div></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <button class="mbtn mbtn-s" onclick="closeModal()">Close</button>
+      <button class="mbtn mbtn-p">⬇ Export .docx</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════
+   CLOCK
+═══════════════════════════════════ */
+(function tick(){
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  document.getElementById('hTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('hDate').textContent=`${p(n.getDate())}-${mo[n.getMonth()]}-${n.getFullYear()}`;
+  setTimeout(tick,1000);
+})();
+
+/* ═══════════════════════════════════
+   HELPERS
+═══════════════════════════════════ */
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const fK=n=>n>=10000000?(n/10000000).toFixed(2)+'Cr':n>=100000?(n/100000).toFixed(1)+'L':n>=1000?(n/1000).toFixed(1)+'K':String(n);
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#4a6080';
+const days20=Array.from({length:20},(_,i)=>(i+1)+'/4');
+const MONTHS=['Jan','Feb','Mar','Apr'];
+const ci={};
+
+const BANKS=[
+  {ifn:'SBIN',nm:'State Bank of India'},
+  {ifn:'HDFC',nm:'HDFC Bank'},
+  {ifn:'ICIC',nm:'ICICI Bank'},
+  {ifn:'PUNB',nm:'Punjab National Bank'},
+  {ifn:'BARB',nm:'Bank of Baroda'},
+  {ifn:'UTIB',nm:'Axis Bank'},
+  {ifn:'IPPB',nm:'India Post Payments Bank'},
+  {ifn:'BKID',nm:'Bank of India'},
+  {ifn:'IDIB',nm:'Indian Bank'},
+  {ifn:'CNRB',nm:'Canara Bank'},
+  {ifn:'UBIN',nm:'Union Bank of India'},
+  {ifn:'IDFB',nm:'IDFC First Bank'},
+  {ifn:'KKBK',nm:'Kotak Mahindra Bank'},
+  {ifn:'YESB',nm:'Yes Bank'},
+  {ifn:'ORBC',nm:'Oriental Bank of Commerce'}
+];
+
+/* Product field definitions — STRICT */
+const PRODS=[
+  {id:'APB',nm:'APB',color:'#dc2626',
+   pendency:124832,deemed:8240,t0:78182,t1:34210,t2:10000,t3:2440,
+   flag:'Pendency Aging T+2 elevated — 12 banks above threshold',fsev:'H'},
+  {id:'ACH CR',nm:'ACH CR',color:'#16a34a',
+   pendency:82000,deemed:4120,t0:58000,t1:18200,t2:4800,t3:1000,
+   flag:'Bihar Gramin Bank T+2 Pendency Aging breach',fsev:'M'},
+  {id:'ACH DR',nm:'ACH DR',color:'#2563eb',
+   pendency:124000,deemed:8840,t0:89000,t1:24000,t2:8560,t3:2440,
+   flag:'12 banks T+1 Pendency Aging · 4 banks SLA breached',fsev:'H'},
+  {id:'AV',nm:'AV',color:'#d97706',
+   expired:3180,exp_mtd:64200,exp_ytd:710000,
+   flag:'Expired rising ↑6% FTD · MTD above 60,000 threshold',fsev:'M'},
+  {id:'eMandate',nm:'eMandate',color:'#7c3aed',
+   initiated:384210,accepted:335720,rejected:48490,pending:8420,
+   flag:'Aadhaar Rejected count 8,19,611 — Aadhaar not linked top reason',fsev:'M'},
+  {id:'MMS',nm:'MMS',color:'#0891b2',
+   initiated:214000,accepted:189176,rejected:24824,
+   flag:null,fsev:'G'}
+];
+
+/* ═══════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════ */
+function goPage(pageId,title,breadcrumb){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+pageId)?.classList.add('on');
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sb-'+pageId)?.classList.add('on');
+  document.getElementById('hdrTitle').textContent=title;
+  document.getElementById('hdrBreadcrumb').textContent=breadcrumb;
+  // Lazy init
+  const inits={apb:initAPB,achcr:initACHCR,achdr:initACHDR,av:initAV,emandate:initEMandate,mms:initMMS,api:initAPI,base:initBASE,redflags:initRedFlags,bankwise:initBankwise,letters:()=>{}};
+  if(inits[pageId]&&!ci[pageId]) inits[pageId]();
+}
+function swPer(el,gid){document.querySelectorAll('#'+gid+' .pb').forEach(p=>p.classList.remove('on'));el.classList.add('on')}
+
+/* ═══════════════════════════════════
+   SUMMARY INIT
+═══════════════════════════════════ */
+window.addEventListener('load',()=>{
+  buildSummaryCards();
+  initSummaryCharts();
+  initInsights();
+  initPoPTable();
+});
+
+function buildSummaryCards(){
+  // Row 1: APB, ACH CR, ACH DR
+  document.getElementById('grid-apb-ach').innerHTML=
+    ['APB','ACH CR','ACH DR'].map(id=>buildProdCard(PRODS.find(x=>x.id===id))).join('');
+  // Row 2: AV, eMandate, MMS
+  document.getElementById('grid-av-em').innerHTML=
+    ['AV','eMandate','MMS'].map(id=>buildProdCard(PRODS.find(x=>x.id===id))).join('');
+}
+
+function buildProdCard(p){
+  if(!p) return '';
+  const isAPBACH=['APB','ACH CR','ACH DR'].includes(p.id);
+  const isAV=p.id==='AV';
+  const isEM=['eMandate','MMS'].includes(p.id);
+
+  let scopeText=isAPBACH?'Pendency · Aging · Deemed':isAV?'Expired':isEM?'Initiated · Accepted · Rejected':'—';
+  let flagClass=p.fsev==='H'?'pcf-red':p.fsev==='M'?'pcf-amber':'pcf-grn';
+  let flagIco=p.fsev==='H'?'🔴':p.fsev==='M'?'🟡':'✅';
+  let dotClass=p.fsev==='H'?'red':p.fsev==='M'?'amber':'grn';
+
+  let metricsHTML='';
+
+  if(isAPBACH){
+    metricsHTML=`
+      <div class="pcard-metrics pm-2col">
+        <div class="pm"><div class="pm-label">Pendency</div><div class="pm-value v-amber">${fK(p.pendency)}</div><div class="pm-hint"><span class="chip chip-warn">FTD</span></div></div>
+        <div class="pm"><div class="pm-label">Deemed</div><div class="pm-value">${fK(p.deemed)}</div><div class="pm-hint"><span class="chip chip-nt">FTD</span></div></div>
+      </div>
+      <div class="aging-strip-label" style="margin-top:9px;font-size:8px;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.5px;color:var(--t4)">Pendency Aging</div>
+      <div class="aging-strip">
+        <div class="aging-cell t0"><div class="aging-cell-label">T+0</div><div class="aging-cell-val">${fK(p.t0)}</div></div>
+        <div class="aging-cell t1"><div class="aging-cell-label">T+1</div><div class="aging-cell-val">${fK(p.t1)}</div></div>
+        <div class="aging-cell t2"><div class="aging-cell-label">T+2</div><div class="aging-cell-val">${fK(p.t2)}</div></div>
+        <div class="aging-cell t3"><div class="aging-cell-label">T+3+</div><div class="aging-cell-val">${fK(p.t3)}</div></div>
+      </div>`;
+  } else if(isAV){
+    metricsHTML=`
+      <div class="pcard-metrics pm-1col">
+        <div class="pm"><div class="pm-label">Expired</div><div class="pm-value v-red">${fK(p.expired)}</div><div class="pm-hint"><span class="chip chip-warn">↑ 6% FTD</span></div></div>
+      </div>
+      <div class="pcard-metrics pm-2col" style="margin-top:6px">
+        <div class="pm"><div class="pm-label">Expired (MTD)</div><div class="pm-value v-red sm" style="font-size:14px">${fK(p.exp_mtd)}</div></div>
+        <div class="pm"><div class="pm-label">Expired (YTD)</div><div class="pm-value sm" style="font-size:14px">${fK(p.exp_ytd)}</div></div>
+      </div>`;
+  } else if(isEM){
+    metricsHTML=`
+      <div class="pcard-metrics pm-3col">
+        <div class="pm"><div class="pm-label">Initiated</div><div class="pm-value v-blue">${fK(p.initiated)}</div></div>
+        <div class="pm"><div class="pm-label">Accepted</div><div class="pm-value v-grn">${fK(p.accepted)}</div></div>
+        <div class="pm"><div class="pm-label">Rejected</div><div class="pm-value v-red">${fK(p.rejected)}</div><div class="pm-hint"><span class="chip chip-dn">↑ 2.1%</span></div></div>
+      </div>`;
+  }
+
+  const footerHTML=p.flag
+    ? `<div class="pcard-footer ${flagClass}"><div class="pcard-footer-ico">${flagIco}</div><div class="pcard-footer-text">${p.flag}</div><button class="pcard-footer-link" onclick="event.stopPropagation();goPage('redflags','🚩 Red Flags','Red Flags & Alerts')">Details</button></div>`
+    : `<div class="pcard-footer pcf-grn"><div class="pcard-footer-ico">✅</div><div class="pcard-footer-text">No active flags</div></div>`;
+
+  return `
+    <div class="pcard" onclick="goPage('${p.id.toLowerCase().replace(' ','')}','${p.nm}','${p.nm}')">
+      <div class="pcard-top" style="background:${p.color}"></div>
+      ${p.flag?`<div class="pcard-flag-dot ${dotClass}"></div>`:''}
+      <div class="pcard-hdr">
+        <div>
+          <div class="pcard-name">${p.nm}</div>
+          <div class="pcard-scope">${scopeText}</div>
+        </div>
+      </div>
+      <div class="pcard-body">${metricsHTML}</div>
+      ${footerHTML}
+    </div>`;
+}
+
+function initSummaryCharts(){
+  ci.summary=true;
+  // Pendency trend
+  new Chart(document.getElementById('summPendChart'),{type:'line',data:{
+    labels:days20,
+    datasets:[
+      {label:'APB Pendency',data:Array.from({length:20},()=>R(100000,140000)),borderColor:'#dc2626',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+      {label:'ACH CR Pendency',data:Array.from({length:20},()=>R(70000,95000)),borderColor:'#16a34a',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+      {label:'ACH DR Pendency',data:Array.from({length:20},()=>R(110000,135000)),borderColor:'#2563eb',borderWidth:2,fill:false,tension:.4,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}
+  });
+  // Deemed trend
+  new Chart(document.getElementById('summDeemedChart'),{type:'line',data:{
+    labels:days20,
+    datasets:[
+      {label:'APB Deemed',data:Array.from({length:20},()=>R(6000,10000)),borderColor:'#dc2626',borderWidth:2,fill:true,backgroundColor:'rgba(220,38,38,.06)',tension:.4,pointRadius:0},
+      {label:'ACH CR Deemed',data:Array.from({length:20},()=>R(3000,5500)),borderColor:'#16a34a',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+      {label:'ACH DR Deemed',data:Array.from({length:20},()=>R(7000,11000)),borderColor:'#2563eb',borderWidth:2,fill:false,tension:.4,pointRadius:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}
+  });
+}
+
+function initInsights(){
+  const items=[
+    {ico:'🔴',t:'APB T+2 Pendency Aging elevated — 12 banks',d:'T+2: 10,000 · T+3+: 2,440 · Deemed risk imminent',a:'→ Issue performance letters to 12 banks'},
+    {ico:'🔴',t:'ACH DR 4 banks SLA breached (T+1 Pendency Aging)',d:'24,000 T+1 · 8,560 T+2 · Deemed accumulating',a:'→ Trigger auto-reminder + escalate T+2 cases'},
+    {ico:'🟡',t:'AV Expired ↑6% — MTD above threshold',d:'FTD: 3,180 · MTD: 64,200 (threshold: 60,000)',a:'→ Issue bank advisory circular'},
+    {ico:'🟡',t:'eMandate Aadhaar Rejected surge',d:'8,19,611 rejections · Aadhaar not linked = top reason',a:'→ UIDAI escalation + bank advisory'},
+    {ico:'🔴',t:'NACH API PUNB Technical Failure 22.4%',d:'vs avg 6% · Connection Refused (XXX) = 91%',a:'→ Draft technical failure letter'}
+  ];
+  document.getElementById('insightList').innerHTML=items.map(i=>`
+    <div class="ins-item" onclick="goPage('redflags','🚩 Red Flags','Red Flags & Alerts')">
+      <div class="ins-ico">${i.ico}</div>
+      <div class="ins-body">
+        <div class="ins-title">${i.t}</div>
+        <div class="ins-desc">${i.d}</div>
+        <div class="ins-action">${i.a}</div>
+      </div>
+    </div>`).join('');
+}
+
+function initPoPTable(){
+  const tb=document.getElementById('popBody');
+  tb.innerHTML=PRODS.map(p=>{
+    const isAPBACH=['APB','ACH CR','ACH DR'].includes(p.id);
+    const isAV=p.id==='AV';
+    const NA=`<td class="tc"><span style="font-size:9px;color:var(--t5);font-family:'JetBrains Mono',monospace">—</span></td>`;
+    const pend=isAPBACH?fK(p.pendency):'—';
+    const pendMtd=isAPBACH?fK(p.pendency*R(18,22)):'—';
+    const deemed=isAPBACH?fK(p.deemed):'—';
+    const deemedMtd=isAPBACH?fK(p.deemed*R(18,22)):'—';
+    const exp=isAV?fK(p.expired):'—';
+    const expMtd=isAV?fK(p.exp_mtd):'—';
+    const t1=isAPBACH?`<span class="bdg bdg-warn">${fK(p.t1)}</span>`:'—';
+    const t2=isAPBACH?`<span class="bdg bdg-bad">${fK(p.t2)}</span>`:'—';
+    const t3=isAPBACH?`<span class="bdg bdg-bad">${fK(p.t3)}</span>`:'—';
+    const dv=R(2,12);
+    return `<tr>
+      <td class="tbn">${p.nm}</td>
+      <td class="tr mono">${pend}</td><td class="tr mono">${pendMtd}</td>
+      <td class="tc">${isAPBACH?`<span class="bdg ${dv>0?'bdg-warn':'bdg-ok'}">${dv>0?'↑':'↓'} ${dv}%</span>`:'—'}</td>
+      <td class="tr mono">${deemed}</td><td class="tr mono">${deemedMtd}</td>
+      <td class="tc">${isAPBACH?`<span class="bdg bdg-warn">+${R(4,14)}%</span>`:'—'}</td>
+      <td class="tr mono">${exp}</td><td class="tr mono">${expMtd}</td>
+      <td class="tc">${isAV?`<span class="bdg bdg-warn">↑ 6%</span>`:'—'}</td>
+      <td class="tc">${t1}</td><td class="tc">${t2}</td><td class="tc">${t3}</td>
+      <td class="tc"><span class="bdg-dot ${p.fsev==='H'?'bad':p.fsev==='M'?'warn':'ok'}"></span></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ═══ PAGE INITS ═══ */
+function mkLineChart(id,label,color,data){
+  new Chart(document.getElementById(id),{type:'line',data:{labels:days20,datasets:[{label,data,borderColor:color,borderWidth:2,fill:true,backgroundColor:color+'18',tension:.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+}
+function mkBar(id,labels,data,colors){
+  new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors||labels.map(()=>'#4878f8'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+}
+
+/* APB */
+function initAPB(){
+  ci.apb=true;
+  mkLineChart('apbPendMtd','Pendency','#dc2626',Array.from({length:20},()=>R(100000,140000)));
+  mkLineChart('apbDeemedMtd','Deemed','#d97706',Array.from({length:20},()=>R(6000,11000)));
+  mkBar('apbAgingBar',['T+0','T+1','T+2','T+3+'],[78182,34210,10000,2440],['#16a34a','#d97706','#ea580c','#dc2626']);
+  new Chart(document.getElementById('apbYtd'),{type:'bar',data:{labels:MONTHS,datasets:[{label:'Pendency',data:[95000,108000,118000,124832],backgroundColor:'rgba(220,38,38,.6)',borderRadius:3},{label:'Deemed',data:[7200,7800,8100,8240],type:'line',borderColor:'#d97706',borderWidth:2,fill:false,tension:.3,pointRadius:3,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fK(v),font:{size:9}}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  buildBankTable('apbBankTbody','APB',true);
+}
+/* ACH CR */
+function initACHCR(){
+  ci.achcr=true;
+  mkLineChart('crPendMtd','Pendency','#16a34a',Array.from({length:20},()=>R(70000,95000)));
+  mkLineChart('crDeemedMtd','Deemed','#d97706',Array.from({length:20},()=>R(3000,5500)));
+  buildBankTable('crBankTbody','ACH CR',false);
+}
+/* ACH DR */
+function initACHDR(){
+  ci.achdr=true;
+  mkLineChart('drPendMtd','Pendency','#2563eb',Array.from({length:20},()=>R(110000,135000)));
+  mkBar('drAgingBar',['T+0','T+1','T+2','T+3+'],[89000,24000,8560,2440],['#16a34a','#d97706','#ea580c','#dc2626']);
+  buildBankTable('drBankTbody','ACH DR',true,true);
+}
+/* AV */
+function initAV(){
+  ci.av=true;
+  mkLineChart('avExpMtd','Expired','#d97706',Array.from({length:20},()=>R(2000,4500)));
+  mkBar('avExpYtd',MONTHS,[52000,58000,61000,64200],['rgba(217,119,6,.6)','rgba(217,119,6,.6)','rgba(220,38,38,.5)','rgba(220,38,38,.7)']);
+  buildBankTable_AV();
+}
+/* eMandate */
+function initEMandate(){
+  ci.emandate=true;
+  const modes=[
+    {nm:'Internet Banking',banks:64,init:817958,acc:464469,rej:353489,topRej:'Auth failed — invalid credentials'},
+    {nm:'Debit Card',banks:183,init:2506760,acc:1915980,rej:590780,topRej:'Technical/connectivity issues at bank end'},
+    {nm:'Aadhaar',banks:212,init:3742456,acc:2922845,rej:819611,topRej:'Aadhaar not linked to debtor account'},
+    {nm:'Simplified Aadhaar',banks:59,init:524820,acc:398424,rej:126396,topRej:'Name mismatch with CBS'},
+    {nm:'E-Sign',banks:467,init:1248260,acc:1148240,rej:100020,topRej:'Incomplete submission'}
+  ];
+  document.getElementById('emModeTbody').innerHTML=modes.map(m=>{
+    const ap=(m.acc/m.init*100).toFixed(1),rp=(m.rej/m.init*100).toFixed(1);
+    return `<tr>
+      <td class="tbn">${m.nm}</td><td class="tc mono">${m.banks}</td>
+      <td class="tr mono">${fK(m.init)}</td><td class="tr mono">${fK(m.acc)}</td><td class="tr mono">${fK(m.rej)}</td>
+      <td class="tc"><span class="bdg ${parseFloat(ap)>=85?'bdg-ok':'bdg-warn'}">${ap}%</span></td>
+      <td class="tc"><span class="bdg ${parseFloat(rp)>20?'bdg-bad':parseFloat(rp)>10?'bdg-warn':'bdg-ok'}">${rp}%</span></td>
+      <td style="font-size:10.5px;color:var(--t3)">${m.topRej}</td>
+    </tr>`;
+  }).join('');
+  new Chart(document.getElementById('emRejPie'),{type:'doughnut',data:{labels:['Aadhaar not linked','Auth failed','Tech issue at bank','Name mismatch','Other'],datasets:[{data:[31,22,18,14,15],backgroundColor:['#dc2626','#d97706','#7c3aed','#0891b2','#9ca3af'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  new Chart(document.getElementById('emMtd'),{type:'bar',data:{labels:days20,datasets:[{label:'Initiated',data:Array.from({length:20},()=>R(350000,420000)),backgroundColor:'rgba(37,99,235,.5)',borderRadius:2},{label:'Accepted',data:Array.from({length:20},()=>R(300000,380000)),backgroundColor:'rgba(22,163,74,.5)',borderRadius:2},{label:'Rejected',data:Array.from({length:20},()=>R(30000,60000)),backgroundColor:'rgba(220,38,38,.5)',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  new Chart(document.getElementById('emYtd'),{type:'line',data:{labels:MONTHS,datasets:[{label:'Accepted',data:[280000,310000,325000,335720],borderColor:'#16a34a',borderWidth:2,fill:false,tension:.3,pointRadius:3},{label:'Rejected',data:[42000,46000,47000,48490],borderColor:'#dc2626',borderWidth:2,fill:false,tension:.3,pointRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+}
+/* MMS */
+function initMMS(){
+  ci.mms=true;
+  new Chart(document.getElementById('mmsMtd'),{type:'bar',data:{labels:days20,datasets:[{label:'Initiated',data:Array.from({length:20},()=>R(19000,23000)),backgroundColor:'rgba(8,145,178,.5)',borderRadius:2},{label:'Accepted',data:Array.from({length:20},()=>R(16500,20500)),backgroundColor:'rgba(22,163,74,.5)',borderRadius:2},{label:'Rejected',data:Array.from({length:20},()=>R(2000,3000)),backgroundColor:'rgba(220,38,38,.5)',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  document.getElementById('mmsRejList').innerHTML=[
+    {r:'Mandate details mismatch',pct:42},
+    {r:'Signature mismatch',pct:28},
+    {r:'Account closed',pct:14},
+    {r:'Incomplete form',pct:10},
+    {r:'Other',pct:6}
+  ].map(rc=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--bd)"><div style="flex:1;font-size:11.5px;color:var(--t2)">${rc.r}</div><div style="width:100px"><div class="bt"><div class="bf bf-r" style="width:${rc.pct*2.2}%"></div></div></div><div class="mono" style="width:32px;text-align:right">${rc.pct}%</div></div>`).join('');
+}
+/* NACH API */
+function initAPI(){
+  ci.api=true;
+  new Chart(document.getElementById('apiMtd'),{type:'bar',data:{labels:days20,datasets:[{type:'bar',label:'Request Count',data:Array.from({length:20},()=>R(40,90)),backgroundColor:'rgba(37,99,235,.14)',borderRadius:2,yAxisID:'y'},{type:'line',label:'Success Count (% rel)',data:Array.from({length:20},()=>R(85,93)),borderColor:'#16a34a',borderWidth:2,fill:false,tension:.4,pointRadius:0,yAxisID:'y1'},{type:'line',label:'Technical Failure%',data:Array.from({length:20},()=>R(3,12)),borderColor:'#dc2626',borderWidth:1.5,fill:false,tension:.4,pointRadius:0,yAxisID:'y1',borderDash:[3,2]}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index'},plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{y:{grid:{display:false}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+  new Chart(document.getElementById('apiTFTrend'),{type:'line',data:{labels:days20,datasets:[{label:'Technical Failure%',data:Array.from({length:20},()=>R(4,22)),borderColor:'#dc2626',borderWidth:2,fill:true,backgroundColor:'rgba(220,38,38,.07)',tension:.4,pointRadius:2},{label:'7-day Avg',data:Array.from({length:20},()=>R(6,8)),borderColor:'#d97706',borderWidth:1.5,fill:false,tension:.3,pointRadius:0,borderDash:[4,3]}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{y:{ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+  document.getElementById('apiBankTbody').innerHTML=BANKS.map((b,i)=>{
+    const req=R(100000,2000000),sp=R(82,97),tf=100-sp-R(0,4),to=R(1,8);
+    const rt=R(120,520);const over=tf>10;
+    return `<tr class="er ${over?'trow-crit':''}" onclick="toggleSR(this,'api-${i}')">
+      <td class="mono">${i+1}</td><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(req)}</td>
+      <td class="tr mono">${fK(Math.floor(req*sp/100))}</td>
+      <td class="tr mono">${fK(Math.floor(req*(100-sp)/100))}</td>
+      <td class="tc"><span class="bdg ${sp>=90?'bdg-ok':sp>=80?'bdg-warn':'bdg-bad'}">${sp}%</span></td>
+      <td class="tc"><span class="bdg ${over?'bdg-bad':tf>5?'bdg-warn':'bdg-ok'}">${tf.toFixed(1)}%</span></td>
+      <td class="tc"><span class="bdg ${to>6?'bdg-warn':'bdg-ok'}">${to}%</span></td>
+      <td class="tc mono">${rt}ms</td>
+      <td class="tc"><span class="bdg ${R(0,1)?'bdg-warn':'bdg-ok'}">${R(0,1)?'↑':'↓'}</span></td>
+      <td class="tc">${over?'🔴':tf>5?'🟡':'🟢'}</td>
+    </tr>
+    <tr class="sr" id="api-${i}"><td colspan="12"><div class="sr-body">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);margin-bottom:8px">FAILURE BREAKDOWN — ${b.nm.toUpperCase()}</div>
+      <div style="display:flex;gap:18px">${[['Connection Refused',R(40,65)],['Timeout',R(20,35)],['System Error',R(10,20)]].map(([d,p])=>`<div><div style="font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-bottom:2px">${d}</div><div style="font-size:16px;font-weight:800;color:var(--red2)">${p}%</div></div>`).join('')}</div>
+    </div></td></tr>`;
+  }).join('');
+}
+/* BASE */
+function initBASE(){
+  ci.base=true;
+  mkLineChart('baseMtd','Success Count','#0891b2',Array.from({length:20},()=>R(36000000,44000000)));
+}
+/* RED FLAGS */
+const FLAGS=[
+  {sev:'H',ico:'🔴',title:'APB — Pendency Aging T+2 elevated · 12 banks above threshold',desc:'Pendency Aging T+2: 10,000 · T+3+: 2,440 across 12 destination banks. Deemed accumulation risk. Deemed items will become unrecoverable if SLA window closes without response.',meta:'APB · Pendency Aging · 07-Apr-26',act:'Draft Letter',type:'rule'},
+  {sev:'H',ico:'🔴',title:'ACH DR — 4 Banks SLA Breached (Pendency Aging T+1)',desc:'Pendency Aging T+1: 24,000 · T+2: 8,560 · T+3+: 2,440. 4 banks beyond T+1 SLA window. Deemed risk imminent. Auto-escalation triggered.',meta:'ACH DR · Pendency Aging T+1 · 10-Apr-26',act:'Send Reminder',type:'rule'},
+  {sev:'H',ico:'🔴',title:'NACH API — PUNB Technical Failure% spike: 22.4% (avg 6.0%)',desc:'Request Count growing but Success Count declining sharply. Connection Refused = 91% of failures. CBS-API endpoint unreachable since 09:15 AM.',meta:'NACH API · Technical Failure% · 10-Apr-26',act:'Draft Letter',type:'rule'},
+  {sev:'H',ico:'🔴',title:'eMandate — Aadhaar Rejected surge: 8,19,611 in current month',desc:'Aadhaar not linked to debtor account = 31% of rejections. Growing MoM. 3 banks pulling average down.',meta:'eMandate · Rejected · Aadhaar mode · 10-Apr-26',act:'Escalate to UIDAI',type:'rule'},
+  {sev:'H',ico:'🔴',title:'AV — Expired (MTD) above 60,000 threshold: 64,200',desc:'Expired (FTD): 3,180 ↑6%. Expired (MTD): 64,200. YTD trajectory shows consistent monthly rise.',meta:'AV · Expired · 10-Apr-26',act:'Advisory Circular',type:'rule'},
+  {sev:'M',ico:'🟡',title:'ACH CR — Bihar Gramin Bank Pendency Aging T+2 breach',desc:'Pendency Aging T+2: 4,800 transactions pending for 2+ days. Deemed accumulation risk.',meta:'ACH CR · Pendency Aging T+2 · 08-Apr-26',act:'Send Reminder',type:'rule'},
+  {sev:'M',ico:'🟡',title:'APB — Deemed YTD trajectory rising MoM',desc:'Deemed (FTD): 8,240 · Deemed (MTD): 1.82L · Deemed (YTD): 21.4L. 3-month upward trend.',meta:'APB · Deemed · MTD',act:'Review',type:'rule'},
+  {sev:'AI',ico:'🤖',title:'AI: APB T+3+ Pendency Aging will cross 3,000 by month-end',desc:'Based on 3-week daily Pendency Aging T+3+ trajectory (+0.8% per day). Predictive threshold breach in 4 days.',meta:'AI predictive · APB Pendency Aging · 87% confidence',act:'Pre-empt',type:'ai'},
+  {sev:'AI',ico:'🤖',title:'AI: eMandate Aadhaar Rejected pattern — weekly rise consistent',desc:'Rejected count increasing 2.1% week-on-week since March 15. Predictive: will cross 9,00,000 by April 20.',meta:'AI pattern · eMandate Aadhaar Rejected · 83% confidence',act:'Escalate',type:'ai'}
+];
+function initRedFlags(){
+  ci.redflags=true;
+  swRF('all',null);
+  document.getElementById('rfPendList').innerHTML=['APB','ACH CR','ACH DR'].map(id=>{
+    const p=PRODS.find(x=>x.id===id);
+    return `<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)">
+      <div style="width:65px;font-size:11.5px;font-weight:700;color:var(--t1)">${id}</div>
+      <div style="width:120px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3)">T+2: ${fK(p.t2)} · T+3+: ${fK(p.t3)}</div>
+      <div style="flex:1"><div class="bt"><div class="bf bf-r" style="width:${Math.min(p.t2/120,100)}%"></div></div></div>
+      <span class="bdg ${p.t2>5000?'bdg-bad':p.t2>2000?'bdg-warn':'bdg-ok'}">${fK(p.t2)}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('rfDeemedList').innerHTML=['APB','ACH CR','ACH DR'].map(id=>{
+    const p=PRODS.find(x=>x.id===id);
+    return `<div style="display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--bd)">
+      <div style="width:65px;font-size:11.5px;font-weight:700;color:var(--t1)">${id}</div>
+      <div style="flex:1"><div class="bt"><div class="bf bf-a" style="width:${Math.min(p.deemed/100,100)}%"></div></div></div>
+      <span class="bdg ${p.deemed>8000?'bdg-bad':p.deemed>4000?'bdg-warn':'bdg-ok'}">${fK(p.deemed)}</span>
+      <span class="bdg ${R(0,1)?'bdg-bad':'bdg-warn'}">${R(0,1)?'↑ Rising':'→ Stable'}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('rfSLATbody').innerHTML=[
+    ['APB','Multiple Banks','Pendency Aging T+2','< 5,000','10,000','07-Apr','HIGH'],
+    ['ACH DR','4 Banks','Pendency Aging T+1','T+1 SLA','Breached','10-Apr','HIGH'],
+    ['NACH API','PUNB','Technical Failure%','< 10%','22.4%','10-Apr','HIGH'],
+    ['eMandate','Aadhaar Mode','Rejected Count','< 7,00,000','8,19,611','01-Apr','HIGH'],
+    ['AV','Multiple Banks','Expired (MTD)','< 60,000','64,200','08-Apr','MED'],
+    ['ACH CR','Bihar Gramin','Pendency Aging T+2','< 3,000','4,800','08-Apr','MED']
+  ].map(([pr,b,fld,thr,act,since,sev])=>`<tr class="${sev==='HIGH'?'trow-crit':''}">
+    <td class="tbn">${pr}</td><td>${b}</td>
+    <td class="tc"><span class="bdg bdg-info">${fld}</span></td>
+    <td class="tc"><span class="bdg bdg-ok">${thr}</span></td>
+    <td class="tc"><span class="bdg bdg-bad">${act}</span></td>
+    <td class="tc mono">${since}</td>
+    <td class="tc"><span class="chip ${sev==='HIGH'?'chip-dn':'chip-warn'}">${sev}</span></td>
+    <td class="tc"><button style="padding:3px 9px;font-size:10px;font-weight:700;border:none;border-radius:5px;cursor:pointer;background:${sev==='HIGH'?'var(--red2)':'var(--amber2)'};color:#fff;font-family:'Inter',sans-serif" onclick="openModal('letter','${pr}')">Action</button></td>
+  </tr>`).join('');
+}
+function swRF(f,el){
+  if(el){document.querySelectorAll('#rfTabGrp .sec-tab').forEach(t=>t.classList.remove('on'));el.classList.add('on')}
+  const show=f==='all'?FLAGS:f==='AI'?FLAGS.filter(x=>x.type==='ai'):FLAGS.filter(x=>x.sev===f);
+  document.getElementById('flagGrid').innerHTML=show.map(fl=>`
+    <div class="flag-card fc-${fl.type==='ai'?'AI':fl.sev}">
+      <div class="flag-card-top">
+        <div class="flag-card-ico">${fl.ico}</div>
+        <span class="flag-sev">${fl.type==='ai'?'AI PREDICT':fl.sev==='H'?'HIGH':'MEDIUM'}</span>
+      </div>
+      <div class="flag-card-body">
+        <div class="flag-card-title">${fl.title}</div>
+        <div class="flag-card-desc">${fl.desc}</div>
+        <div class="flag-card-meta"><span>${fl.meta}</span></div>
+      </div>
+      <div class="flag-card-actions">
+        <button class="flag-action-btn" onclick="openModal('letter','${fl.title.split('—')[0].trim()}')">${fl.act}</button>
+      </div>
+    </div>`).join('');
+}
+
+/* BANK-WISE */
+function initBankwise(){
+  ci.bankwise=true;
+  document.getElementById('bkTbody').innerHTML=BANKS.map((b,i)=>{
+    const apbP=R(1000,25000),apbD=R(100,4000);
+    const crP=R(500,12000),crD=R(50,2000);
+    const drP=R(800,18000),drD=R(80,2500);
+    const avE=R(50,600);
+    const emI=R(10000,80000),emA=Math.floor(emI*R(72,98)/100),emR=emI-emA;
+    const flag=apbP>18000||drP>14000||emR>8000;
+    return `<tr class="${flag?'trow-crit':''}">
+      <td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(apbP)}</td><td class="tc"><span class="bdg ${apbD>3000?'bdg-warn':'bdg-ok'}">${fK(apbD)}</span></td>
+      <td class="tr mono">${fK(crP)}</td><td class="tc"><span class="bdg ${crD>1500?'bdg-warn':'bdg-ok'}">${fK(crD)}</span></td>
+      <td class="tr mono">${fK(drP)}</td><td class="tc"><span class="bdg ${drD>2000?'bdg-warn':'bdg-ok'}">${fK(drP>14000?R(2000,3500):R(100,1500))}</span></td>
+      <td class="tr mono"><span class="bdg ${avE>400?'bdg-bad':'bdg-ok'}">${fK(avE)}</span></td>
+      <td class="tr mono">${fK(emI)}</td><td class="tr mono">${fK(emA)}</td>
+      <td class="tc"><span class="bdg ${emR>8000?'bdg-bad':emR>4000?'bdg-warn':'bdg-ok'}">${fK(emR)}</span></td>
+      <td class="tc">${flag?'🔴':'🟢'}</td>
+    </tr>`;
+  }).join('');
+  new Chart(document.getElementById('bkPendTrend'),{type:'line',data:{labels:days20,datasets:BANKS.slice(0,5).map((b,i)=>({label:b.ifn,data:Array.from({length:20},()=>R(5000,25000)),borderColor:['#2563eb','#16a34a','#dc2626','#d97706','#7c3aed'][i],borderWidth:1.5,fill:false,tension:.4,pointRadius:0}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  new Chart(document.getElementById('bkDeemedComp'),{type:'bar',data:{labels:BANKS.slice(0,8).map(b=>b.ifn),datasets:[{label:'APB Deemed',data:BANKS.slice(0,8).map(()=>R(100,4000)),backgroundColor:'rgba(220,38,38,.6)',borderRadius:3},{label:'ACH CR Deemed',data:BANKS.slice(0,8).map(()=>R(50,2000)),backgroundColor:'rgba(22,163,74,.6)',borderRadius:3},{label:'ACH DR Deemed',data:BANKS.slice(0,8).map(()=>R(80,2500)),backgroundColor:'rgba(37,99,235,.6)',borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:9,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+}
+
+/* Bank table builders */
+function buildBankTable(tbodyId,product,showAction,showSLA){
+  const tb=document.getElementById(tbodyId);if(!tb)return;
+  tb.innerHTML=BANKS.map((b,i)=>{
+    const pend=R(500,20000),t0=R(300,12000),t1=R(100,5000),t2=R(20,2000),t3=R(0,500);
+    const deemed=R(50,3000);const over=t2>1000||t3>200;
+    return `<tr class="er ${over?'trow-crit':''}" onclick="toggleSR(this,'bk-${product.replace(' ','')}-${i}')">
+      <td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(pend)}</td><td class="tr mono">${fK(pend*R(18,22))}</td>
+      <td class="tc"><span class="bdg bdg-ok">${fK(t0)}</span></td>
+      <td class="tc"><span class="bdg bdg-warn">${fK(t1)}</span></td>
+      <td class="tc"><span class="bdg ${t2>1000?'bdg-bad':'bdg-warn'}">${fK(t2)}</span></td>
+      <td class="tc"><span class="bdg ${t3>200?'bdg-bad':'bdg-ok'}">${fK(t3)}</span></td>
+      <td class="tr mono">${fK(deemed)}</td><td class="tr mono">${fK(deemed*R(18,22))}</td>
+      ${showSLA?`<td class="tc"><span class="bdg ${over?'bdg-bad':'bdg-ok'}">${over?'Breached':'Within SLA'}</span></td>`:''}
+      <td class="tc">${over?'🔴':t1>3000?'🟡':'🟢'}</td>
+      ${showAction?`<td class="tc">${over?`<button style="padding:2px 8px;background:var(--red2);color:#fff;border:none;border-radius:4px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif" onclick="event.stopPropagation();openModal('letter','${product}')">Letter</button>`:'—'}</td>`:''}
+    </tr>
+    <tr class="sr" id="bk-${product.replace(' ','')}-${i}"><td colspan="15"><div class="sr-body">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--blue);margin-bottom:7px">PENDENCY AGING DETAIL — ${b.nm.toUpperCase()} · ${product}</div>
+      <div style="display:flex;gap:18px">
+        ${['T+0','T+1','T+2','T+3+'].map((t,j)=>`<div><div style="font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-bottom:1px">PENDENCY AGING ${t}</div><div style="font-size:18px;font-weight:800;color:${j>=2?'var(--red2)':'var(--t1)'}">${fK([t0,t1,t2,t3][j])}</div></div>`).join('')}
+        <div><div style="font-size:8px;color:var(--t4);font-family:'JetBrains Mono',monospace;margin-bottom:1px">DEEMED</div><div style="font-size:18px;font-weight:800;color:var(--t1)">${fK(deemed)}</div></div>
+      </div>
+    </div></td></tr>`;
+  }).join('');
+}
+
+function buildBankTable_AV(){
+  document.getElementById('avBankTbody').innerHTML=BANKS.map((b,i)=>{
+    const ftd=R(50,500),mtd=R(1000,9000),ytd=R(10000,90000);
+    const over=mtd>5000;
+    return `<tr class="${over?'trow-crit':''}">
+      <td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(ftd)}</td><td class="tr mono">${fK(mtd)}</td><td class="tr mono">${fK(ytd)}</td>
+      <td class="tc"><span class="bdg ${R(0,1)?'bdg-bad':'bdg-ok'}">${R(0,1)?'↑ '+R(1,18)+'%':'↓ '+R(1,8)+'%'}</span></td>
+      <td class="tc"><span class="bdg ${R(0,1)?'bdg-warn':'bdg-ok'}">${R(0,1)?'↑ '+R(1,12)+'%':'↓ '+R(1,6)+'%'}</span></td>
+      <td class="tc"><span class="bdg ${over?'bdg-bad':'bdg-ok'}">${over?'↑ Rising':'↓ Stable'}</span></td>
+      <td class="tc">${over?'🔴':'🟢'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* Shared row expand */
+function toggleSR(row,id){
+  const sr=document.getElementById(id);if(!sr)return;
+  const open=sr.classList.contains('open');
+  document.querySelectorAll('.sr.open').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.er.open').forEach(r=>r.classList.remove('open'));
+  if(!open){sr.classList.add('open');row.classList.add('open')}
+}
+
+/* ═══ MODAL ═══ */
+function openModal(type,product){
+  const prod=product||'Product';
+  document.getElementById('modalTitle').textContent=`Performance Letter — ${prod}`;
+  document.getElementById('modalBody').innerHTML=`
+    <pre style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.8;white-space:pre-wrap;background:var(--s2);border:1.5px solid var(--bd);border-radius:var(--r-md);padding:16px;color:var(--t2)">National Payments Corporation of India
+One India Bulls Centre, Tower 2 B, 10th Floor,
+841 Senapati Bapat Marg, Elphinstone Road, Mumbai – 400 013
+
+                                    Ref: NPCI/NACH/2026/XXX
+                                    Date: 10 April 2026
+
+To
+The General Manager (Operations)
+[Bank Name]
+
+Dear Sir / Madam,
+
+Sub: ${prod==='AV'?'Elevated Expired Count under AV':prod==='NACH API'?'Elevated Technical Failure% under NACH API Services':prod==='eMandate'?'Elevated Rejected Count under eMandate — Aadhaar Mode':prod.includes('ACH')?`Elevated Pendency Aging under ${prod} — Corrective Action Required`:`Elevated Pendency Aging and Deemed Accumulation under ${prod}`}
+
+Reference is invited to your bank's performance under NACH's ${prod} module for the current
+period. NPCI's review has identified the following concerns:
+
+${prod==='AV'?`  a. Expired Count (MTD): 64,200 — exceeds threshold of 60,000
+  b. FTD Expired: 3,180 — rising 6% vs previous day
+  c. YTD Expired trajectory shows consistent monthly increase
+`:prod==='NACH API'?`  a. Technical Failure%: 22.4% vs system average of 6.0%
+  b. Connection Refused (XXX) accounts for 91% of failures
+  c. CBS-API endpoint appears unreachable since 09:15 AM
+`:prod==='eMandate'?`  a. Rejected Count (MTD): 8,19,611 — growing month-on-month
+  b. Top rejection reason: Aadhaar not linked to debtor account (31%)
+  c. Aadhaar mode performance below acceptable threshold
+`:`  a. Pendency Aging T+2 has exceeded stipulated threshold
+  b. Deemed items accumulating — uncollectable if SLA window closes
+  c. T+3+ pending items require immediate resolution
+`}Required Actions:
+  a. Corrective action plan to be submitted within 10 working days.
+  b. Root-cause analysis to be shared with NPCI's Customer Success team.
+  c. Daily status update until metrics return to threshold.
+
+Yours faithfully,
+
+Giridhar G.M.
+Chief — Customer Success
+National Payments Corporation of India</pre>`;
+  document.getElementById('mainModal').classList.add('open');
+}
+function closeModal(){document.getElementById('mainModal').classList.remove('open')}
+document.getElementById('mainModal').addEventListener('click',function(e){if(e.target===this)closeModal()});
+
+function exp(f){alert(`Exporting as .${f.toUpperCase()}…\nIn production: formatted ${f.toUpperCase()} with all product-specific fields and auto-summary.`)}
+</script>
+</body>
+</html>
