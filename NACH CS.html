@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1400">
+<title>NACH — Operations Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --n0:#050e28;--n1:#0b1c48;--n2:#102264;--n3:#1a3a90;
+  --b1:#1648d8;--b2:#2558e8;--b3:#4878f8;--bpale:#ebf0fd;
+  --g1:#146030;--g2:#18a050;--g3:#22c55e;--gpale:#edfaf2;--gbrd:#bbf7d0;
+  --r1:#991b1b;--r2:#dc2626;--r3:#f87171;--rpale:#fef2f2;--rbrd:#fecaca;
+  --a1:#92400e;--a2:#d97706;--a3:#fbbf24;--apale:#fffbeb;--abrd:#fde68a;
+  --t1:#0e7490;--t2:#0891b2;--t3:#38bdf8;--tpale:#f0f9ff;--tbrd:#bae6fd;
+  --v1:#5b21b6;--v2:#7c3aed;--v3:#a78bfa;--vpale:#f5f3ff;--vbrd:#ddd6fe;
+  --p1:#be185d;--p2:#ec4899;--ppale:#fdf2f8;--pbrd:#fbcfe8;
+  --bg:#f0f4fb;--bg2:#e4ecf8;--bg3:#d8e4f2;
+  --s0:#fff;--s1:#f8fafd;--s2:#f1f5fb;
+  --bd:#dce4f0;--bd2:#c4d0e8;--bd3:#a8b8d0;
+  --t0:#060e22;--tx:#1a2c48;--ts:#44607a;--tm:#7890a8;--tq:#a8bcd0;
+  --sh1:0 1px 6px rgba(6,14,48,.08);--sh2:0 4px 18px rgba(6,14,48,.10);
+  --sh3:0 8px 32px rgba(6,14,48,.13);--sh4:0 16px 56px rgba(6,14,48,.16);
+  --r1px:4px;--r2px:8px;--r3px:12px;--r4px:16px;
+  --sbw:218px;--hdh:52px;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-size:13px;line-height:1.5;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
+
+/* ── HEADER ── */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:900;height:var(--hdh);
+  background:linear-gradient(90deg,var(--n0) 0%,var(--n1) 60%,#0f1e50 100%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;box-shadow:0 2px 24px rgba(0,0,0,.32)}
+.hdr-brand{width:var(--sbw);min-width:var(--sbw);padding:0 16px;display:flex;align-items:center;gap:10px;border-right:1px solid rgba(255,255,255,.07);height:100%;flex-shrink:0}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--b1),var(--b3));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 2px 10px rgba(72,120,248,.4)}
+.brand-name{font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px}
+.brand-sub{font-size:8.5px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.8px;margin-top:1px}
+.hdr-mid{flex:1;padding:0 18px;display:flex;align-items:center;gap:8px;min-width:0}
+.hdr-pg-title{font-size:13.5px;font-weight:600;color:#fff;letter-spacing:-.2px}
+.hdr-sep{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.2)}
+.hdr-bc{font-size:11px;color:rgba(255,255,255,.35)}
+.hdr-right{display:flex;align-items:center;gap:8px;padding:0 14px;flex-shrink:0}
+.hfl{padding:4px 9px;height:28px;border:1px solid rgba(255,255,255,.16);border-radius:5px;font-family:'Inter',sans-serif;font-size:11px;color:#fff;background:rgba(255,255,255,.07);outline:none;cursor:pointer}
+.hfl option{background:#1a3a90}
+.per-grp{display:flex;background:rgba(255,255,255,.07);border-radius:6px;padding:2px;gap:1px}
+.pp{padding:3px 9px;border-radius:4px;font-size:10.5px;font-weight:600;cursor:pointer;color:rgba(255,255,255,.4);transition:.12s;font-family:'JetBrains Mono',monospace;user-select:none}
+.pp:hover{color:#fff;background:rgba(255,255,255,.1)}
+.pp.on{background:rgba(255,255,255,.18);color:#fff}
+.hdr-sep2{width:1px;height:24px;background:rgba(255,255,255,.1)}
+.hbtn{padding:4px 12px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;display:inline-flex;align-items:center;gap:3px;transition:.12s;font-family:'Inter',sans-serif;white-space:nowrap}
+.hbtn-o{background:transparent;border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.7)}
+.hbtn-o:hover{background:rgba(255,255,255,.1);color:#fff}
+.hbtn-g{background:rgba(34,197,94,.15);border-color:rgba(34,197,94,.35);color:#4ade80}
+.live{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#4ade80}
+.lpulse{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:lp 1.4s ease-in-out infinite}
+@keyframes lp{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 4px rgba(74,222,128,0)}}
+.hdr-time{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#fff}
+.hdr-date{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35)}
+
+/* ── SHELL ── */
+.shell{display:flex;height:100vh;padding-top:var(--hdh)}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sbw);min-width:var(--sbw);background:var(--n0);border-right:1px solid rgba(255,255,255,.06);overflow-y:auto;display:flex;flex-direction:column;padding-bottom:24px}
+.sidebar::-webkit-scrollbar{width:0}
+.sb-alert{margin:10px 10px 4px;background:linear-gradient(90deg,rgba(220,38,38,.2),rgba(220,38,38,.08));border:1px solid rgba(220,38,38,.3);border-radius:8px;padding:8px 11px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.14s}
+.sb-alert:hover{background:linear-gradient(90deg,rgba(220,38,38,.3),rgba(220,38,38,.14))}
+.sb-al-ico{font-size:13px;flex-shrink:0}
+.sb-al-t{font-size:10.5px;font-weight:700;color:#fca5a5}
+.sb-al-s{font-size:9px;color:rgba(252,165,165,.55);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.sb-al-badge{background:var(--r2);border-radius:10px;padding:1px 6px;font-size:9px;font-weight:800;color:#fff;font-family:'JetBrains Mono',monospace;animation:sbp 2s ease-in-out infinite}
+@keyframes sbp{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.5)}50%{box-shadow:0 0 0 5px rgba(220,38,38,0)}}
+.sb-grp{margin-bottom:1px}
+.sb-lbl{font-size:8px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.2);padding:10px 14px 3px}
+.si{padding:7px 13px;display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,.48);cursor:pointer;transition:.12s;border-left:2px solid transparent;user-select:none}
+.si:hover{color:rgba(255,255,255,.82);background:rgba(255,255,255,.05)}
+.si.on{color:#fff;background:rgba(72,120,248,.14);border-left-color:var(--b3);font-weight:600}
+.si-ic{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.35);flex-shrink:0;transition:.12s}
+.si.on .si-ic{background:rgba(72,120,248,.28);color:var(--b3)}
+
+/* ── Cancel/Amendment sidebar item — distinct pink accent ── */
+.si.si-ca{border-left-color:transparent}
+.si.si-ca:hover{background:rgba(236,72,153,.08)}
+.si.si-ca.on{background:rgba(236,72,153,.14);border-left-color:#ec4899;color:#fff}
+.si.si-ca.on .si-ic{background:rgba(236,72,153,.25);color:#f9a8d4}
+.si-ca .si-ic{color:#f9a8d4}
+
+.si-bdg{margin-left:auto;font-size:9px;padding:1px 5px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-weight:700;flex-shrink:0}
+.sib-r{background:rgba(220,38,38,.22);color:#fca5a5;border:1px solid rgba(220,38,38,.25)}
+.sib-a{background:rgba(217,119,6,.18);color:#fcd34d;border:1px solid rgba(217,119,6,.22)}
+.sib-p{background:rgba(236,72,153,.2);color:#f9a8d4;border:1px solid rgba(236,72,153,.25)}
+.sb-div{height:1px;background:rgba(255,255,255,.05);margin:5px 11px}
+
+.main{flex:1;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
+
+/* ── PAGES ── */
+.pg{display:none;padding:16px 20px 32px;animation:pgIn .17s ease}
+.pg.on{display:block}
+@keyframes pgIn{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+/* ── CANCEL/AMENDMENT PAGE ─ distinct identity ── */
+.ca-page-header{
+  background:linear-gradient(90deg,rgba(190,24,93,.06),rgba(124,58,237,.04));
+  border:1.5px solid rgba(190,24,93,.18);
+  border-radius:var(--r3px);padding:14px 18px;margin-bottom:16px;
+  display:flex;align-items:flex-start;gap:14px;
+}
+.ca-page-icon{
+  width:44px;height:44px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--p1),var(--p2));
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+  box-shadow:0 3px 12px rgba(190,24,93,.3);
+}
+.ca-page-title{font-size:16px;font-weight:800;color:var(--p1);margin-bottom:3px;letter-spacing:-.3px}
+.ca-page-sub{font-size:11.5px;color:var(--ts);line-height:1.5}
+
+/* ── ALERT BANNER ── */
+.ab{border-radius:var(--r3px);padding:11px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px;border:1.5px solid;box-shadow:var(--sh1)}
+.ab-r{background:linear-gradient(90deg,var(--rpale),#fff8f8);border-color:var(--rbrd)}
+.ab-a{background:linear-gradient(90deg,var(--apale),#fffdfa);border-color:var(--abrd)}
+.ab-p{background:linear-gradient(90deg,var(--ppale),#fdf8fc);border-color:var(--pbrd)}
+.ab-ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ab-r .ab-ico{background:linear-gradient(135deg,var(--r2),var(--r3));box-shadow:0 2px 8px rgba(220,38,38,.3)}
+.ab-a .ab-ico{background:linear-gradient(135deg,var(--a2),var(--a3));box-shadow:0 2px 8px rgba(217,119,6,.3)}
+.ab-p .ab-ico{background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 2px 8px rgba(190,24,93,.3)}
+.ab-body{flex:1}
+.ab-title{font-size:12px;font-weight:700;margin-bottom:2px}
+.ab-r .ab-title{color:var(--r1)}.ab-a .ab-title{color:var(--a1)}.ab-p .ab-title{color:var(--p1)}
+.ab-desc{font-size:11px;color:var(--ts);line-height:1.5}
+.ab-btn{padding:5px 13px;border-radius:6px;font-size:10.5px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;white-space:nowrap;align-self:flex-start;transition:.12s}
+.ab-r .ab-btn{background:var(--r2);color:#fff}.ab-a .ab-btn{background:var(--a2);color:#fff}.ab-p .ab-btn{background:var(--p1);color:#fff}
+
+/* ── SECTION HEADER ── */
+.sec{display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.sec.mt{margin-top:18px}
+.sec-acc{width:3px;height:14px;border-radius:2px;flex-shrink:0}
+.sa-b{background:linear-gradient(180deg,var(--b1),var(--b3))}
+.sa-r{background:linear-gradient(180deg,var(--r1),var(--r3))}
+.sa-a{background:linear-gradient(180deg,var(--a1),var(--a3))}
+.sa-g{background:linear-gradient(180deg,var(--g1),var(--g3))}
+.sa-p{background:linear-gradient(180deg,var(--p1),var(--p2))}
+.sa-v{background:linear-gradient(180deg,var(--v1),var(--v3))}
+.sec-title{font-size:11px;font-weight:700;color:var(--t0);text-transform:uppercase;letter-spacing:.5px}
+.sec-rule{flex:1;height:1px;background:var(--bd)}
+.sec-note{font-size:9.5px;color:var(--tm);font-family:'JetBrains Mono',monospace}
+.sec-stabs{display:flex;gap:3px;margin-left:6px}
+.stab{padding:3px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--bd);color:var(--ts);background:var(--s0);transition:.12s;user-select:none}
+.stab:hover{border-color:var(--b3);color:var(--b1)}
+.stab.on{background:var(--bpale);border-color:var(--b3);color:var(--b1)}
+/* Pink tab variant for C/A page */
+.stab-p{border-color:rgba(190,24,93,.2);color:var(--p1);background:var(--ppale)}
+.stab-p.on{background:var(--ppale);border-color:var(--p1);color:var(--p1)}
+
+/* ── KPI STRIP ── */
+.ks{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap}
+.kb{flex:1;min-width:100px;background:var(--s0);border:1.5px solid var(--bd);border-radius:var(--r3px);padding:11px 13px;position:relative;overflow:hidden}
+.kb::before{content:'';position:absolute;top:0;left:0;right:0;height:2.5px;border-radius:var(--r3px) var(--r3px) 0 0}
+.kb-b::before{background:linear-gradient(90deg,var(--b1),var(--b3))}
+.kb-g::before{background:linear-gradient(90deg,var(--g1),var(--g3))}
+.kb-r::before{background:linear-gradient(90deg,var(--r1),var(--r3))}
+.kb-a::before{background:linear-gradient(90deg,var(--a1),var(--a3))}
+.kb-v::before{background:linear-gradient(90deg,var(--v1),var(--v3))}
+.kb-p::before{background:linear-gradient(90deg,var(--p1),var(--p2))}
+.kb-lbl{font-size:8.5px;font-weight:600;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;text-transform:uppercase;color:var(--tm);margin-bottom:3px}
+.kb-val{font-size:22px;font-weight:800;color:var(--t0);letter-spacing:-.5px;line-height:1;margin-bottom:2px}
+.kb-val.sm{font-size:16px}
+.kb-hint{font-size:10px;color:var(--ts);display:flex;align-items:center;gap:4px}
+.kb-subs{display:flex;gap:10px;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.kb-sl{font-size:8px;color:var(--tq);font-family:'JetBrains Mono',monospace;text-transform:uppercase}
+.kb-sv{font-size:12px;font-weight:600;color:var(--tx)}
+
+/* ── CHIPS ── */
+.chip{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:700;padding:1.5px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.cu{background:var(--gpale);color:var(--g1)}
+.cd{background:var(--rpale);color:var(--r2)}
+.cw{background:var(--apale);color:var(--a1)}
+.cp{background:var(--ppale);color:var(--p1)}
+.cn{background:var(--s2);color:var(--ts)}
+
+/* ── CARD ── */
+.card{background:var(--s0);border:1.5px solid var(--bd);border-radius:var(--r3px);overflow:hidden;margin-bottom:12px;box-shadow:var(--sh1)}
+/* Pink-bordered card for C/A module */
+.card-ca{border-color:rgba(190,24,93,.2);box-shadow:0 2px 12px rgba(190,24,93,.06)}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--bd);background:var(--s1)}
+.ch-ca{background:linear-gradient(90deg,rgba(190,24,93,.04),rgba(124,58,237,.02));border-bottom-color:rgba(190,24,93,.12)}
+.ch-l{display:flex;flex-direction:column;gap:1px}
+.ct{font-size:12px;font-weight:700;color:var(--t0)}
+.cs{font-size:10px;color:var(--ts)}
+.cb{padding:12px 14px}
+.ctag{font-size:9px;font-family:'JetBrains Mono',monospace;padding:2px 7px;border-radius:4px;font-weight:600}
+.cb-b{background:var(--bpale);color:var(--b1)}
+.cb-r{background:var(--rpale);color:var(--r2)}
+.cb-g{background:var(--gpale);color:var(--g1)}
+.cb-a{background:var(--apale);color:var(--a1)}
+.cb-p{background:var(--ppale);color:var(--p1)}
+.cb-v{background:var(--vpale);color:var(--v1)}
+
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:11px}
+.g6040{display:grid;grid-template-columns:3fr 2fr;gap:12px;margin-bottom:12px}
+.g7030{display:grid;grid-template-columns:7fr 3fr;gap:12px;margin-bottom:12px}
+
+/* ── TABLE ── */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead tr{background:var(--s2)}
+th{padding:6px 10px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:8.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--ts);border-bottom:2px solid var(--bd);white-space:nowrap;font-weight:600;cursor:pointer;user-select:none}
+th:hover{color:var(--b1)}
+/* Pink header for C/A tables */
+.th-ca{background:linear-gradient(90deg,rgba(190,24,93,.06),rgba(124,58,237,.03)) !important}
+.th-ca th{border-bottom-color:rgba(190,24,93,.2);}
+.th-ca th:hover{color:var(--p1)}
+th.tc,td.tc{text-align:center}
+th.tr,td.tr{text-align:right}
+td{padding:6px 10px;border-bottom:1px solid var(--bd);color:var(--tx);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--s2)}
+.tr-crit td{background:rgba(220,38,38,.03)!important}
+.tr-crit:hover td{background:rgba(220,38,38,.06)!important}
+.tr-ca:hover td{background:rgba(190,24,93,.04)!important}
+.er{cursor:pointer}
+.er:hover td{background:var(--bpale)!important}
+.er td:first-child::before{content:'▶';font-size:7px;color:var(--tm);margin-right:5px;display:inline-block;transition:transform .13s}
+.er.open td:first-child::before{transform:rotate(90deg);color:var(--b1)}
+.sr{display:none}
+.sr.open{display:table-row;animation:pgIn .14s ease}
+.sr td{padding:0;background:var(--bg2)!important}
+.sr-in{padding:9px 13px;border-left:3px solid var(--b3)}
+.sr-in-ca{border-left-color:var(--p2) !important}
+.tbn{font-weight:600;color:var(--t0)}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+
+/* ── BADGE ── */
+.bdg{display:inline-flex;align-items:center;padding:1.5px 7px;border-radius:20px;font-size:9.5px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+.bok{background:var(--gpale);color:var(--g1);border:1px solid var(--gbrd)}
+.bwrn{background:var(--apale);color:var(--a1);border:1px solid var(--abrd)}
+.bbad{background:var(--rpale);color:var(--r2);border:1px solid var(--rbrd)}
+.binfo{background:var(--bpale);color:var(--b1);border:1px solid #c0d0f8}
+.bpink{background:var(--ppale);color:var(--p1);border:1px solid var(--pbrd)}
+.bvio{background:var(--vpale);color:var(--v1);border:1px solid var(--vbrd)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;display:inline-block}
+.dok{background:var(--g3)}.dwrn{background:var(--a3)}.derr{background:var(--r3)}.dpink{background:var(--p2)}
+
+/* ── BAR ── */
+.br{display:flex;align-items:center;gap:6px}
+.bt{height:5px;flex:1;background:var(--bg3);border-radius:3px;overflow:hidden;min-width:40px}
+.bf{height:100%;border-radius:3px}
+.bfb{background:linear-gradient(90deg,var(--b1),var(--b3))}
+.bfg{background:linear-gradient(90deg,var(--g1),var(--g3))}
+.bfr{background:linear-gradient(90deg,var(--r1),var(--r3))}
+.bfa{background:linear-gradient(90deg,var(--a1),var(--a3))}
+.bfp{background:linear-gradient(90deg,var(--p1),var(--p2))}
+
+/* ── CHART BOX ── */
+.cbox{position:relative;width:100%}
+.h120{height:120px}.h140{height:140px}.h160{height:160px}.h180{height:180px}.h200{height:200px}.h220{height:220px}
+
+/* ── REASON CODE PILLS ── */
+.rc-pill{display:inline-flex;align-items:center;gap:3px;font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:5px;white-space:nowrap}
+.rp-td{background:rgba(220,38,38,.1);color:var(--r2);border:1px solid rgba(220,38,38,.2)}
+.rp-bd{background:rgba(217,119,6,.1);color:var(--a1);border:1px solid rgba(217,119,6,.2)}
+.rp-ca{background:rgba(190,24,93,.1);color:var(--p1);border:1px solid rgba(190,24,93,.2)}
+
+/* ── FLAG GRID ── */
+.fg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.fc{border-radius:var(--r3px);padding:12px 13px;border:1.5px solid;cursor:pointer;transition:.13s;display:flex;flex-direction:column;gap:8px}
+.fc:hover{box-shadow:var(--sh2);transform:translateY(-1px)}
+.fc-H{background:var(--rpale);border-color:var(--rbrd)}
+.fc-M{background:var(--apale);border-color:var(--abrd)}
+.fc-P{background:var(--ppale);border-color:var(--pbrd)}
+.fc-AI{background:var(--vpale);border-color:var(--vbrd)}
+.fc-L{background:var(--gpale);border-color:var(--gbrd)}
+.fc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:6px}
+.fc-ico{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.fc-H .fc-ico{background:linear-gradient(135deg,var(--r2),var(--r3));box-shadow:0 2px 8px rgba(220,38,38,.3)}
+.fc-M .fc-ico{background:linear-gradient(135deg,var(--a2),var(--a3));box-shadow:0 2px 8px rgba(217,119,6,.3)}
+.fc-P .fc-ico{background:linear-gradient(135deg,var(--p1),var(--p2));box-shadow:0 2px 8px rgba(190,24,93,.3)}
+.fc-AI .fc-ico{background:linear-gradient(135deg,var(--v2),var(--v3));box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.fc-L .fc-ico{background:linear-gradient(135deg,var(--g2),var(--g3));box-shadow:0 2px 8px rgba(24,160,80,.3)}
+.fc-sev{font-size:8.5px;font-weight:800;padding:2px 7px;border-radius:10px;font-family:'JetBrains Mono',monospace}
+.fc-H .fc-sev{background:var(--r2);color:#fff}
+.fc-M .fc-sev{background:var(--a2);color:#fff}
+.fc-P .fc-sev{background:var(--p1);color:#fff}
+.fc-AI .fc-sev{background:var(--v2);color:#fff}
+.fc-L .fc-sev{background:var(--g2);color:#fff}
+.fc-title{font-size:11.5px;font-weight:700;color:var(--t0);line-height:1.35;margin-bottom:3px}
+.fc-desc{font-size:10.5px;color:var(--ts);line-height:1.45}
+.fc-meta{font-size:9px;color:var(--tm);font-family:'JetBrains Mono',monospace;margin-top:4px}
+.fc-btn{padding:6px 10px;border-radius:6px;font-size:10.5px;font-weight:700;cursor:pointer;border:none;font-family:'Inter',sans-serif;transition:.12s}
+.fc-H .fc-btn{background:var(--r2);color:#fff}
+.fc-M .fc-btn{background:var(--a2);color:#fff}
+.fc-P .fc-btn{background:var(--p1);color:#fff}
+.fc-AI .fc-btn{background:var(--v2);color:#fff}
+.fc-L .fc-btn{background:var(--g2);color:#fff}
+
+/* ── INSIGHTS PANEL ── */
+.ins-panel{background:linear-gradient(150deg,var(--n0) 0%,var(--n2) 100%);border-radius:var(--r3px);padding:13px 15px;color:#fff;border:1px solid rgba(255,255,255,.06)}
+.ins-hdr{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.35);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.ins-hdr::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08)}
+.ins-item{display:flex;align-items:flex-start;gap:8px;background:rgba(255,255,255,.06);border-radius:7px;padding:8px 9px;margin-bottom:5px;cursor:pointer;transition:.12s;border:1px solid rgba(255,255,255,.05)}
+.ins-item:hover{background:rgba(255,255,255,.12)}
+.ins-item:last-child{margin-bottom:0}
+.ins-ico{font-size:13px;flex-shrink:0;margin-top:1px}
+.ins-t{font-size:10.5px;font-weight:600;line-height:1.3;margin-bottom:1px}
+.ins-d{font-size:9px;color:rgba(255,255,255,.5);line-height:1.4}
+.ins-a{font-size:8.5px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+
+/* ── MODAL ── */
+.mov{display:none;position:fixed;inset:0;z-index:999;background:rgba(5,14,40,.45);backdrop-filter:blur(6px);justify-content:center;align-items:center}
+.mov.open{display:flex}
+.modal{background:var(--s0);border:1.5px solid var(--bd);border-radius:var(--r4px);width:min(900px,94vw);max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--sh4)}
+.mhdr{padding:13px 19px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:9px;background:var(--s1);border-radius:var(--r4px) var(--r4px) 0 0}
+.mt{font-size:13.5px;font-weight:700;color:var(--t0);flex:1}
+.mcls{width:27px;height:27px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--ts);border:1px solid var(--bd);transition:.12s}
+.mcls:hover{background:var(--rpale);color:var(--r2)}
+.mbody{padding:17px 19px;overflow-y:auto;flex:1}
+.mftr{padding:11px 19px;border-top:1px solid var(--bd);display:flex;gap:7px;justify-content:flex-end;background:var(--s1);border-radius:0 0 var(--r4px) var(--r4px)}
+.mbtn{padding:5px 15px;border-radius:6px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid;transition:.12s;font-family:'Inter',sans-serif}
+.mbp{background:var(--b1);color:#fff;border-color:var(--b1)}.mbp:hover{background:var(--b2)}
+.mbs{background:var(--s0);color:var(--tx);border-color:var(--bd2)}.mbs:hover{background:var(--bg2)}
+.mbpp{background:var(--p1);color:#fff;border-color:var(--p1)}.mbpp:hover{background:var(--p2)}
+
+/* ── PRODUCT SUMMARY CARDS ── */
+.pcard{background:var(--s0);border:1.5px solid var(--bd);border-radius:var(--r3px);overflow:hidden;cursor:pointer;transition:.14s;box-shadow:var(--sh1)}
+.pcard:hover{box-shadow:var(--sh3);transform:translateY(-2px);border-color:var(--bd2)}
+.pcard-top{height:3.5px;width:100%}
+.pcard-hdr{padding:10px 13px 7px;border-bottom:1px solid var(--bd);background:var(--s1);display:flex;align-items:flex-start;justify-content:space-between}
+.pcard-name{font-size:13px;font-weight:700;color:var(--t0)}
+.pcard-scope{font-size:8.5px;font-family:'JetBrains Mono',monospace;color:var(--tm);background:var(--s2);border:1px solid var(--bd);border-radius:8px;padding:1px 7px;margin-top:3px;display:inline-block}
+.pcard-body{padding:9px 13px}
+.pm-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+.pm-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px}
+.pm{background:var(--s2);border:1px solid var(--bd);border-radius:var(--r2px);padding:7px 9px}
+.pm-lbl{font-size:8px;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.4px;color:var(--tm);margin-bottom:2px}
+.pm-val{font-size:16px;font-weight:800;color:var(--t0);letter-spacing:-.3px}
+.pm-sub{font-size:9.5px;color:var(--ts);margin-top:1px}
+.aging-strip{display:flex;gap:3px;margin-top:2px}
+.ag-cell{flex:1;border-radius:6px;padding:5px 6px;text-align:center;border:1px solid}
+.ag0{background:#f0fdf4;border-color:#bbf7d0}.ag1{background:var(--apale);border-color:var(--abrd)}
+.ag2{background:#fff7ed;border-color:#fed7aa}.ag3{background:var(--rpale);border-color:var(--rbrd)}
+.ag-lbl{font-size:7.5px;font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:.3px}
+.ag0 .ag-lbl{color:var(--g1)}.ag1 .ag-lbl{color:var(--a1)}.ag2 .ag-lbl{color:#c2410c}.ag3 .ag-lbl{color:var(--r1)}
+.ag-val{font-size:12px;font-weight:800;margin-top:1px}
+.ag0 .ag-val{color:var(--g2)}.ag1 .ag-val{color:var(--a2)}.ag2 .ag-val{color:#ea580c}.ag3 .ag-val{color:var(--r2)}
+.pcard-footer{margin:0 13px 10px;padding:6px 9px;border-radius:7px;border:1px solid;display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:500}
+.pf-r{background:var(--rpale);border-color:var(--rbrd)}.pf-a{background:var(--apale);border-color:var(--abrd)}.pf-g{background:var(--gpale);border-color:var(--gbrd)}
+.pf-r .pcard-footer-text{color:var(--r1)}.pf-a .pcard-footer-text{color:var(--a1)}.pf-g .pcard-footer-text{color:var(--g1)}
+.pf-btn{padding:2px 8px;border:none;border-radius:4px;font-size:9px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif}
+.pf-r .pf-btn{background:var(--r2);color:#fff}.pf-a .pf-btn{background:var(--a2);color:#fff}.pf-g .pf-btn{background:var(--g2);color:#fff}
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<header class="hdr">
+  <div class="hdr-brand">
+    <div class="brand-mark">NP</div>
+    <div><div class="brand-name">NACH</div><div class="brand-sub">Ops · Model 2.0</div></div>
+  </div>
+  <div class="hdr-mid">
+    <div class="hdr-pg-title" id="hPgT">Summary Overview</div>
+    <div class="hdr-sep"></div>
+    <div class="hdr-bc" id="hBc">All Products · FTD</div>
+  </div>
+  <div class="hdr-right">
+    <select class="hfl"><option>All Banks</option><option>SBIN</option><option>HDFC</option><option>ICIC</option><option>PUNB</option><option>BARB</option><option>UTIB</option><option>IPPB</option><option>BKID</option><option>IDIB</option><option>CNRB</option></select>
+    <select class="hfl"><option>All Products</option><option>APB</option><option>ACH CR</option><option>ACH DR</option><option>AV</option><option>eMandate</option><option>MMS</option><option>BASE</option><option>NACH API</option><option>Cancel/Amendment</option></select>
+    <div class="per-grp" id="gPer">
+      <div class="pp on" onclick="sP(this,'gPer')">FTD</div>
+      <div class="pp" onclick="sP(this,'gPer')">MTD</div>
+      <div class="pp" onclick="sP(this,'gPer')">YTD</div>
+      <div class="pp" onclick="sP(this,'gPer')">Custom</div>
+    </div>
+    <div class="hdr-sep2"></div>
+    <button class="hbtn hbtn-o" onclick="exp('xlsx')">⬇ Excel</button>
+    <button class="hbtn hbtn-g" onclick="exp('pdf')">⬇ PDF</button>
+    <div class="hdr-sep2"></div>
+    <div class="live"><div class="lpulse"></div>LIVE</div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
+      <div class="hdr-time" id="hTime"></div>
+      <div class="hdr-date" id="hDate"></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ SHELL ═══ -->
+<div class="shell">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sb-alert" onclick="nav('redflags')">
+    <div class="sb-al-ico">🚩</div>
+    <div style="flex:1"><div class="sb-al-t">Active Red Flags</div><div class="sb-al-s">6 High · 3 Medium · 2 AI</div></div>
+    <div class="sb-al-badge" id="rfBadge">11</div>
+  </div>
+
+  <div class="sb-grp">
+    <div class="sb-lbl">Overview</div>
+    <div class="si on" id="si-summary" onclick="nav('summary')"><div class="si-ic">◈</div>Summary</div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-grp">
+    <div class="sb-lbl">APB · ACH · AV</div>
+    <div class="si" id="si-apb" onclick="nav('apb')"><div class="si-ic">⊙</div>APB<span class="si-bdg sib-r">⚠</span></div>
+    <div class="si" id="si-achcr" onclick="nav('achcr')"><div class="si-ic">↑</div>ACH CR</div>
+    <div class="si" id="si-achdr" onclick="nav('achdr')"><div class="si-ic">↓</div>ACH DR<span class="si-bdg sib-a">⚠</span></div>
+    <div class="si" id="si-av" onclick="nav('av')"><div class="si-ic">✓</div>AV<span class="si-bdg sib-a">⚠</span></div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-grp">
+    <div class="sb-lbl">Mandates</div>
+    <div class="si" id="si-emandate" onclick="nav('emandate')"><div class="si-ic">↺</div>eMandate<span class="si-bdg sib-a">⚠</span></div>
+    <div class="si" id="si-mms" onclick="nav('mms')"><div class="si-ic">⊞</div>MMS</div>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-grp">
+    <div class="sb-lbl">API & BASE</div>
+    <div class="si" id="si-api" onclick="nav('api')"><div class="si-ic">⌁</div>NACH API<span class="si-bdg sib-r">⚠</span></div>
+    <div class="si" id="si-base" onclick="nav('base')"><div class="si-ic">⌇</div>BASE</div>
+  </div>
+  <div class="sb-div"></div>
+
+  <!-- ── CANCEL / AMENDMENT — OWN GROUP ── -->
+  <div class="sb-grp">
+    <div class="sb-lbl" style="color:rgba(249,168,212,.4)">Cancel / Amendment</div>
+    <div class="si si-ca" id="si-ca" onclick="nav('ca')">
+      <div class="si-ic" style="font-size:12px">✕/✎</div>Cancel / Amendment
+      <span class="si-bdg sib-p">⚠</span>
+    </div>
+  </div>
+
+  <div class="sb-div"></div>
+  <div class="sb-grp">
+    <div class="sb-lbl">Intelligence</div>
+    <div class="si" id="si-redflags" onclick="nav('redflags')"><div class="si-ic">⚠</div>Red Flags<span class="si-bdg sib-r" id="rfSbC">11</span></div>
+    <div class="si" id="si-bankwise" onclick="nav('bankwise')"><div class="si-ic">🏦</div>Bank-wise</div>
+    <div class="si" id="si-letters" onclick="nav('letters')"><div class="si-ic">✉</div>Perf. Letters</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ════ SUMMARY ════ -->
+<div class="pg on" id="pg-summary">
+  <div class="ab ab-r">
+    <div class="ab-ico">🔴</div>
+    <div class="ab-body">
+      <div class="ab-title">6 Critical Issues — Immediate Action Required</div>
+      <div class="ab-desc">APB Pendency Aging T+2 elevated · ACH DR T+1 SLA breached · AV Expired ↑6% · eMandate Aadhaar Rejected surge · NACH API Technical Decline spike · Cancel/Amendment Decline elevated — see dedicated tab</div>
+    </div>
+    <button class="ab-btn" onclick="nav('redflags')">View All →</button>
+  </div>
+
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">APB · ACH CR · ACH DR</div><div class="sec-rule"></div><div class="sec-note">Pendency · Pendency Aging · Deemed only</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px" id="g1"></div>
+
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">AV · eMandate · MMS</div><div class="sec-rule"></div><div class="sec-note">AV: Expired only · eMandate/MMS: Initiated · Accepted · Rejected</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px" id="g2"></div>
+
+  <!-- Cancel/Amendment summary card — standalone -->
+  <div class="sec"><div class="sec-acc sa-p"></div><div class="sec-title" style="color:var(--p1)">Cancel / Amendment</div><div class="sec-rule"></div><div class="sec-note">Separate dedicated tab in sidebar · Click for full analysis</div></div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+    <div class="card card-ca" style="cursor:pointer" onclick="nav('ca')">
+      <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Cancel Mandates (FTD)</div></div>
+      <div class="cb">
+        <div style="font-size:22px;font-weight:800;color:var(--p1);letter-spacing:-.5px">12,840</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:3px;display:flex;align-items:center;gap:5px">Declined: <strong style="color:var(--r2)">2,142</strong> <span class="chip cw">Decline%: 16.7%</span></div>
+      </div>
+    </div>
+    <div class="card card-ca" style="cursor:pointer" onclick="nav('ca')">
+      <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Amendment Requests (FTD)</div></div>
+      <div class="cb">
+        <div style="font-size:22px;font-weight:800;color:var(--p1);letter-spacing:-.5px">4,280</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:3px;display:flex;align-items:center;gap:5px">Declined: <strong style="color:var(--r2)">684</strong> <span class="chip cw">Decline%: 16.0%</span></div>
+      </div>
+    </div>
+    <div class="card card-ca" style="cursor:pointer" onclick="nav('ca')">
+      <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Top Decline Code — Cancel</div></div>
+      <div class="cb">
+        <div style="margin-bottom:4px"><span class="rc-pill rp-ca">Code 211</span></div>
+        <div style="font-size:10.5px;color:var(--ts)">Late Response — Bank API timeout</div>
+        <div style="font-size:9.5px;color:var(--p1);font-weight:600;margin-top:4px">IDIB · BARB · PUNB top offenders</div>
+      </div>
+    </div>
+    <div class="card card-ca" style="cursor:pointer" onclick="nav('ca')">
+      <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Top Decline Code — Amendment</div></div>
+      <div class="cb">
+        <div style="margin-bottom:4px"><span class="rc-pill rp-ca">Code 123</span></div>
+        <div style="font-size:10.5px;color:var(--ts)">RespData tag missing — Format error</div>
+        <div style="font-size:9.5px;color:var(--p1);font-weight:600;margin-top:4px">BARB · ICIC · UTIB top offenders</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="g7030">
+    <div>
+      <div class="card"><div class="ch"><div class="ct">Pendency — MTD Day-wise (APB · ACH CR · ACH DR)</div><span class="ctag cb-b">MTD</span></div><div class="cb"><div class="cbox h160"><canvas id="sPendC"></canvas></div></div></div>
+      <div class="card"><div class="ch"><div class="ct">Deemed — MTD Day-wise (APB · ACH CR · ACH DR)</div><span class="ctag cb-a">MTD</span></div><div class="cb"><div class="cbox h120"><canvas id="sDeemedC"></canvas></div></div></div>
+    </div>
+    <div class="ins-panel"><div class="ins-hdr">⚡ Top Issues Today</div><div id="insL"></div></div>
+  </div>
+
+  <div class="sec mt"><div class="sec-acc sa-b"></div><div class="sec-title">Period-over-Period Comparison</div><div class="sec-rule"></div><div class="sec-note">Applicable fields per product only</div></div>
+  <div class="card">
+    <div class="ch"><div class="ct">All Products — PoP Table</div><span class="ctag cb-g">PoP</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Product</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">Δ</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">Δ</th><th class="tr">Expired (FTD)</th><th class="tr">Expired (MTD)</th><th class="tc">Δ</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tc">Status</th></tr></thead>
+      <tbody id="popTb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════ CANCEL / AMENDMENT — DEDICATED STANDALONE PAGE ════ -->
+<div class="pg" id="pg-ca">
+
+  <!-- Distinct page identity header -->
+  <div class="ca-page-header">
+    <div class="ca-page-icon">✕/✎</div>
+    <div>
+      <div class="ca-page-title">Cancel / Amendment</div>
+      <div class="ca-page-sub">Dedicated analysis of mandate cancellation and amendment requests · Decline reason codes (Code 211, Code 123) · Bank-wise tracking · MTD/YTD trends · No mixing with API or BASE performance data</div>
+    </div>
+  </div>
+
+  <!-- Sub-tabs: Cancel | Amendment | Bank-wise | Reason Codes | Trend -->
+  <div class="sec"><div class="sec-acc sa-p"></div>
+    <div class="sec-stabs" id="caTabs">
+      <div class="stab stab-p on" onclick="swCA('cancel',this)">Cancel Mandates</div>
+      <div class="stab stab-p" onclick="swCA('amendment',this)">Amendment</div>
+      <div class="stab stab-p" onclick="swCA('bankwise',this)">Bank-wise</div>
+      <div class="stab stab-p" onclick="swCA('rc',this)">Reason Codes</div>
+      <div class="stab stab-p" onclick="swCA('trend',this)">MTD / YTD Trend</div>
+    </div>
+    <div class="sec-rule"></div>
+  </div>
+
+  <!-- ── CANCEL MANDATES TAB ── -->
+  <div id="cav-cancel">
+    <div class="ab ab-p">
+      <div class="ab-ico">🔴</div>
+      <div class="ab-body">
+        <div class="ab-title">Cancel Mandate Decline Rate: 16.7% · Code 211 (Late Response) = primary driver · 3 banks above threshold</div>
+        <div class="ab-desc">IDIB, BARB, PUNB collectively account for 62% of cancel declines. CBS batch job timing conflict suspected at IDIB. Bank API response timeout causing cancellation failure.</div>
+      </div>
+      <button class="ab-btn" onclick="openModal('letter','Cancel Mandates')">Draft Letter →</button>
+    </div>
+
+    <div class="ks">
+      <div class="kb kb-p"><div class="kb-lbl">Cancel Mandates Initiated (FTD)</div><div class="kb-val">12,840</div><div class="kb-hint"><span class="chip cn">FTD</span></div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">2.56L</div></div><div><div class="kb-sl">YTD</div><div class="kb-sv">30.7L</div></div></div></div>
+      <div class="kb kb-r"><div class="kb-lbl">Cancel Mandates Declined (FTD)</div><div class="kb-val">2,142</div><div class="kb-hint"><span class="chip cw">Decline%: 16.7%</span></div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">42,840</div></div><div><div class="kb-sl">YTD</div><div class="kb-sv">5.14L</div></div></div></div>
+      <div class="kb kb-g"><div class="kb-lbl">Cancel Mandates Processed (FTD)</div><div class="kb-val">10,698</div><div class="kb-hint"><span class="chip cu">Process%: 83.3%</span></div></div>
+      <div class="kb kb-a"><div class="kb-lbl">Decline% vs Prev Day</div><div class="kb-val sm">16.7%</div><div class="kb-hint"><span class="chip cw">↑ 3.2pp vs prev</span></div></div>
+      <div class="kb kb-r"><div class="kb-lbl">Banks Above Threshold (15%)</div><div class="kb-val sm">3 Banks</div><div class="kb-hint"><span class="chip cd">IDIB · BARB · PUNB</span></div></div>
+    </div>
+
+    <div class="g2">
+      <div class="card card-ca">
+        <div class="ch ch-ca"><div class="ch-l"><div class="ct" style="color:var(--p1)">Cancel Mandates — Initiated vs Declined (MTD Day-wise)</div></div><span class="ctag cb-p">MTD</span></div>
+        <div class="cb"><div class="cbox h200"><canvas id="caCancelMtd"></canvas></div></div>
+      </div>
+      <div class="card card-ca">
+        <div class="ch ch-ca"><div class="ch-l"><div class="ct" style="color:var(--p1)">Cancel Decline Reason Distribution</div><div class="cs">MTD · Code 211 vs Code 123 vs Other</div></div><span class="ctag cb-p">RC Split</span></div>
+        <div class="cb"><div class="cbox h200"><canvas id="caCancelPie"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- Bank-wise cancel table -->
+    <div class="card card-ca">
+      <div class="ch ch-ca">
+        <div class="ch-l"><div class="ct" style="color:var(--p1)">Bank-wise Cancel Mandate Tracking — Sorted by Decline% descending</div><div class="cs">Click row → Code-level breakdown · Red rows = above 15% threshold</div></div>
+        <div style="display:flex;gap:6px">
+          <span class="ctag cb-p">Bank × Code</span>
+          <button style="padding:4px 10px;background:var(--p1);color:#fff;border:none;border-radius:5px;font-size:10px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif" onclick="openModal('letter','Cancel Mandates')">✉ Bulk Letter</button>
+        </div>
+      </div>
+      <div class="tw"><table>
+        <thead class="th-ca"><tr>
+          <th>#</th><th>IFN Code</th><th>Bank Name</th>
+          <th class="tr">Cancel Initiated (FTD)</th><th class="tr">Cancel Initiated (MTD)</th>
+          <th class="tr">Cancel Declined (FTD)</th><th class="tr">Cancel Declined (MTD)</th>
+          <th class="tc">Decline% (FTD)</th><th class="tc">Decline% (MTD)</th>
+          <th class="tc">vs Threshold (15%)</th>
+          <th class="tc">Top Decline Code</th><th class="tc">2nd Code</th>
+          <th class="tc">MoM Trend</th><th class="tc">Action</th>
+        </tr></thead>
+        <tbody id="caCancelBankTb"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ── AMENDMENT TAB ── -->
+  <div id="cav-amendment" style="display:none">
+    <div class="ab ab-p">
+      <div class="ab-ico">✎</div>
+      <div class="ab-body">
+        <div class="ab-title">Amendment Decline Rate: 16.0% · Code 123 (RespData tag missing) = primary driver · Bank API SDK non-compliance</div>
+        <div class="ab-desc">BARB, ICIC, UTIB driving Code 123 failures. Bank SDK not including RespData tag in API response — format non-compliance. Developer advisory issued.</div>
+      </div>
+      <button class="ab-btn" onclick="openModal('letter','Amendment')">Draft Letter →</button>
+    </div>
+
+    <div class="ks">
+      <div class="kb kb-p"><div class="kb-lbl">Amendment Requests (FTD)</div><div class="kb-val">4,280</div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">85,600</div></div><div><div class="kb-sl">YTD</div><div class="kb-sv">10.3L</div></div></div></div>
+      <div class="kb kb-r"><div class="kb-lbl">Amendment Declined (FTD)</div><div class="kb-val">684</div><div class="kb-hint"><span class="chip cw">Decline%: 16.0%</span></div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">13,696</div></div></div></div>
+      <div class="kb kb-g"><div class="kb-lbl">Amendment Processed (FTD)</div><div class="kb-val">3,596</div><div class="kb-hint"><span class="chip cu">Process%: 84.0%</span></div></div>
+      <div class="kb kb-a"><div class="kb-lbl">Decline% vs Prev Day</div><div class="kb-val sm">16.0%</div><div class="kb-hint"><span class="chip cw">↑ 2.0pp</span></div></div>
+      <div class="kb kb-r"><div class="kb-lbl">Banks Above Threshold (15%)</div><div class="kb-val sm">3 Banks</div><div class="kb-hint"><span class="chip cd">BARB · ICIC · UTIB</span></div></div>
+    </div>
+
+    <div class="g2">
+      <div class="card card-ca">
+        <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Amendment — Initiated vs Declined (MTD Day-wise)</div><span class="ctag cb-p">MTD</span></div>
+        <div class="cb"><div class="cbox h200"><canvas id="caAmendMtd"></canvas></div></div>
+      </div>
+      <div class="card card-ca">
+        <div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Amendment Decline Reason Distribution</div></div>
+        <div class="cb"><div class="cbox h200"><canvas id="caAmendPie"></canvas></div></div>
+      </div>
+    </div>
+
+    <div class="card card-ca">
+      <div class="ch ch-ca"><div class="ch-l"><div class="ct" style="color:var(--p1)">Bank-wise Amendment Tracking</div><div class="cs">Click row → Code-level breakdown</div></div><span class="ctag cb-p">Bank × Code</span></div>
+      <div class="tw"><table>
+        <thead class="th-ca"><tr>
+          <th>#</th><th>IFN Code</th><th>Bank Name</th>
+          <th class="tr">Amend Requested (FTD)</th><th class="tr">Amend Requested (MTD)</th>
+          <th class="tr">Amend Declined (FTD)</th><th class="tr">Amend Declined (MTD)</th>
+          <th class="tc">Decline% (FTD)</th><th class="tc">Decline% (MTD)</th>
+          <th class="tc">vs Threshold</th>
+          <th class="tc">Top Decline Code</th>
+          <th class="tc">MoM Trend</th><th class="tc">Action</th>
+        </tr></thead>
+        <tbody id="caAmendBankTb"></tbody>
+      </table></div>
+    </div>
+  </div>
+
+  <!-- ── BANK-WISE COMBINED TAB ── -->
+  <div id="cav-bankwise" style="display:none">
+    <div class="sec"><div class="sec-acc sa-p"></div><div class="sec-title" style="color:var(--p1)">Bank-wise — Cancel Mandates + Amendment Combined View</div><div class="sec-rule"></div><div class="sec-note">All banks · Cancel Initiated · Cancel Declined · Cancel Decline% · Amendment Initiated · Amendment Declined · Amendment Decline%</div></div>
+    <div class="card card-ca">
+      <div class="ch ch-ca"><div class="ch-l"><div class="ct" style="color:var(--p1)">Bank-wise Cancel &amp; Amendment Combined</div><div class="cs">Sorted by total decline count descending · Click row → full code breakdown</div></div><span class="ctag cb-p">Full Matrix</span></div>
+      <div class="tw"><table>
+        <thead class="th-ca"><tr>
+          <th>#</th><th>IFN</th><th>Bank Name</th>
+          <th class="tr">Cancel Initiated</th><th class="tr">Cancel Declined</th><th class="tc">Cancel Dec%</th>
+          <th class="tr">Amend Requested</th><th class="tr">Amend Declined</th><th class="tc">Amend Dec%</th>
+          <th class="tc">Top Cancel Code</th><th class="tc">Top Amend Code</th>
+          <th class="tc">Combined Flag</th>
+        </tr></thead>
+        <tbody id="caBankCombTb"></tbody>
+      </table></div>
+    </div>
+    <div class="g2">
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Cancel Decline% — Top 8 Banks</div></div><div class="cb"><div class="cbox h180"><canvas id="caBankBar"></canvas></div></div></div>
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Amendment Decline% — Top 8 Banks</div></div><div class="cb"><div class="cbox h180"><canvas id="caAmendBar"></canvas></div></div></div>
+    </div>
+  </div>
+
+  <!-- ── REASON CODES TAB ── -->
+  <div id="cav-rc" style="display:none">
+    <div class="sec"><div class="sec-acc sa-p"></div><div class="sec-title" style="color:var(--p1)">Cancel / Amendment Decline Reason Codes</div><div class="sec-rule"></div><div class="sec-note">All codes applicable to Cancel &amp; Amendment flows only</div></div>
+    <div class="g6040">
+      <div class="card card-ca">
+        <div class="ch ch-ca"><div class="ch-l"><div class="ct" style="color:var(--p1)">All Cancel / Amendment Decline Codes</div><div class="cs">Ranked by MTD volume · Click row → bank-wise contribution</div></div><span class="ctag cb-p">RC Analysis</span></div>
+        <div class="tw"><table>
+          <thead class="th-ca"><tr>
+            <th>#</th><th>Code</th><th>Description</th><th class="tc">Applies To</th>
+            <th class="tr">FTD</th><th class="tr">MTD</th><th class="tc">Share%</th>
+            <th class="tc">Trend</th><th class="tc">Top 3 Banks</th><th class="tc">Root Cause</th><th class="tc">Resolution</th>
+          </tr></thead>
+          <tbody id="caRCTb"></tbody>
+        </table></div>
+      </div>
+      <div>
+        <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Code Distribution — Cancel vs Amendment</div></div><div class="cb"><div class="cbox h180"><canvas id="caRCPie"></canvas></div></div></div>
+        <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Code 211 vs Code 123 — MTD Trend</div></div><div class="cb"><div class="cbox h140"><canvas id="caRCTrend"></canvas></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MTD / YTD TREND TAB ── -->
+  <div id="cav-trend" style="display:none">
+    <div class="sec"><div class="sec-acc sa-p"></div><div class="sec-title" style="color:var(--p1)">Cancel / Amendment — MTD Day-wise &amp; YTD Month-wise Trends</div><div class="sec-rule"></div></div>
+    <div class="g2">
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Cancel &amp; Amendment Decline% — MTD Day-wise</div><span class="ctag cb-p">MTD</span></div><div class="cb"><div class="cbox h200"><canvas id="caTrendMtd"></canvas></div></div></div>
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">YTD Month-wise — Initiated vs Declined</div><span class="ctag cb-p">YTD</span></div><div class="cb"><div class="cbox h200"><canvas id="caTrendYtd"></canvas></div></div></div>
+    </div>
+    <div class="g2">
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Cancel Decline% — 3 Critical Banks MTD</div></div><div class="cb"><div class="cbox h160"><canvas id="caBankTrendLine"></canvas></div></div></div>
+      <div class="card card-ca"><div class="ch ch-ca"><div class="ct" style="color:var(--p1)">Period-over-Period Comparison</div><div class="cs">Cancel &amp; Amendment FTD vs MTD vs YTD</div></div>
+        <div class="tw"><table>
+          <thead class="th-ca"><tr><th>Metric</th><th class="tr">FTD</th><th class="tr">MTD</th><th class="tr">YTD</th><th class="tc">Δ FTD vs Prev</th><th class="tc">Δ MTD vs Prev Mth</th></tr></thead>
+          <tbody id="caPoPTb"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════ NACH API (TD/BD only — NO Cancel/Amendment) ════ -->
+<div class="pg" id="pg-api">
+  <div class="ab ab-r">
+    <div class="ab-ico">🔴</div>
+    <div class="ab-body">
+      <div class="ab-title">NACH API — PUNB Technical Decline spike: 22.4% vs avg 6.0% · Code 536 (Bank CBS Not Responding)</div>
+      <div class="ab-desc">Technical Decline (TD) and Business Decline (BD) only shown here. Cancel/Amendment data is in the dedicated Cancel/Amendment tab.</div>
+    </div>
+    <button class="ab-btn" onclick="openModal('letter','NACH API')">Draft Letter →</button>
+  </div>
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">NACH API — Request Count · Success Count · Failure Count · TD% · BD%</div><div class="sec-rule"></div><div class="sec-note">Cancel/Amendment is a separate dedicated tab — not shown here</div></div>
+  <div class="ks">
+    <div class="kb kb-b"><div class="kb-lbl">Request Count (FTD)</div><div class="kb-val">84.2L</div><div class="kb-hint"><span class="chip cu">↑ 4.1%</span></div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">16.8Cr</div></div></div></div>
+    <div class="kb kb-g"><div class="kb-lbl">Success Count</div><div class="kb-val">74.8L</div><div class="kb-hint">Success%: 88.8%</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Failure Count (TD)</div><div class="kb-val">5.4L</div><div class="kb-hint"><span class="chip cd">TD%: 6.4%</span></div></div>
+    <div class="kb kb-a"><div class="kb-lbl">Business Decline (BD)</div><div class="kb-val">4.0L</div><div class="kb-hint">BD%: 4.8%</div></div>
+    <div class="kb kb-v"><div class="kb-lbl">Avg Response Time</div><div class="kb-val sm">248ms</div><div class="kb-hint">P95: 620ms</div></div>
+  </div>
+  <div class="g6040">
+    <div class="card">
+      <div class="ch"><div class="ch-l"><div class="ct">NACH API — TD &amp; BD Reason Codes</div><div class="cs">Technical Decline + Business Decline only · Click row → bank-wise</div></div><span class="ctag cb-r">TD / BD only</span></div>
+      <div class="tw" style="max-height:340px;overflow-y:auto"><table>
+        <thead><tr><th>#</th><th>Code</th><th>Description</th><th class="tc">Type</th><th class="tr">FTD</th><th class="tr">MTD</th><th class="tc">Share%</th><th class="tc">Trend</th><th class="tc">Top Banks</th></tr></thead>
+        <tbody id="apiRCTb"></tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="card"><div class="ch"><div class="ct">TD vs BD Distribution</div></div><div class="cb"><div class="cbox h160"><canvas id="apiTypePie"></canvas></div></div></div>
+      <div class="card"><div class="ch"><div class="ct">Technical Decline% — MTD Trend</div></div><div class="cb"><div class="cbox h140"><canvas id="apiTFTrend"></canvas></div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ch-l"><div class="ct">Bank-wise NACH API — Request Count · Success Count · Failure Count · TD% · BD%</div><div class="cs">Cancel/Amendment → see dedicated tab · Click row → code breakdown</div></div><span class="ctag cb-r">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>IFN</th><th>Bank Name</th><th class="tr">Request Count</th><th class="tr">Success Count</th><th class="tr">Failure Count</th><th class="tc">Success%</th><th class="tc">TD%</th><th class="tc">BD%</th><th class="tc">Top TD Code</th><th class="tc">Top BD Code</th><th class="tc">Avg RT</th><th class="tc">Flag</th></tr></thead>
+      <tbody id="apiBankTb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════ BASE (TD/BD only — NO Cancel/Amendment) ════ -->
+<div class="pg" id="pg-base">
+  <div class="ab" style="background:linear-gradient(90deg,var(--tpale),#f8fdff);border-color:var(--tbrd)">
+    <div class="ab-ico" style="background:linear-gradient(135deg,var(--t2),var(--t3));box-shadow:0 2px 8px rgba(8,145,178,.3)">ℹ</div>
+    <div class="ab-body">
+      <div class="ab-title" style="color:var(--t1)">BASE — TD &amp; BD shown here · Cancel/Amendment is in dedicated tab</div>
+      <div class="ab-desc">Code B09 (No CBS Data) = top BD · Code 536 (CBS Not Responding) = top TD. Cancel/Amendment data including Code 211/123 is tracked in the separate Cancel/Amendment tab.</div>
+    </div>
+  </div>
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">BASE — Request Count · Success Count · Failure Count · TD% · BD%</div><div class="sec-rule"></div><div class="sec-note">Cancel/Amendment → dedicated tab in sidebar</div></div>
+  <div class="ks">
+    <div class="kb kb-b"><div class="kb-lbl">Request Count (FTD)</div><div class="kb-val">42.4L</div><div class="kb-hint"><span class="chip cu">↑ 2.8%</span></div></div>
+    <div class="kb kb-g"><div class="kb-lbl">Success Count</div><div class="kb-val">40.2L</div><div class="kb-hint">Success%: 94.8%</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">TD Count</div><div class="kb-val">1.1L</div><div class="kb-hint"><span class="chip cw">TD%: 2.6%</span></div></div>
+    <div class="kb kb-a"><div class="kb-lbl">BD Count</div><div class="kb-val">1.1L</div><div class="kb-hint">BD%: 2.6%</div></div>
+  </div>
+  <div class="g6040">
+    <div class="card">
+      <div class="ch"><div class="ch-l"><div class="ct">BASE — TD &amp; BD Reason Codes only</div><div class="cs">Cancel/Amendment codes (211, 123) → dedicated tab</div></div><span class="ctag cb-r">TD / BD only</span></div>
+      <div class="tw" style="max-height:300px;overflow-y:auto"><table>
+        <thead><tr><th>#</th><th>Code</th><th>Description</th><th class="tc">Type</th><th class="tr">FTD</th><th class="tr">MTD</th><th class="tc">Share%</th><th class="tc">Top Banks</th><th class="tc">Root Cause</th></tr></thead>
+        <tbody id="baseRCTb"></tbody>
+      </table></div>
+    </div>
+    <div>
+      <div class="card"><div class="ch"><div class="ct">TD vs BD Distribution</div></div><div class="cb"><div class="cbox h160"><canvas id="baseTypePie"></canvas></div></div></div>
+      <div class="card"><div class="ch"><div class="ct">MTD Day-wise — Success / TD / BD</div></div><div class="cb"><div class="cbox h140"><canvas id="baseMtdC"></canvas></div></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><div class="ch-l"><div class="ct">Bank-wise BASE — TD% · BD% (Cancel/Amendment → dedicated tab)</div></div><span class="ctag cb-r">Layer 3</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>IFN</th><th>Bank Name</th><th class="tr">Request Count</th><th class="tr">Success Count</th><th class="tr">Failure Count</th><th class="tc">Success%</th><th class="tc">TD%</th><th class="tc">BD%</th><th class="tc">Top TD Code</th><th class="tc">Top BD Code</th><th class="tc">Flag</th></tr></thead>
+      <tbody id="baseBankTb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════ APB ════ -->
+<div class="pg" id="pg-apb">
+  <div class="ab ab-r"><div class="ab-ico">🔴</div><div class="ab-body"><div class="ab-title">APB — Pendency Aging T+2: 10,000 · T+3+: 2,440 · 12 banks above threshold</div><div class="ab-desc">Deemed: 8,240 accumulating. No Success%/Failure% shown — per data definition.</div></div><button class="ab-btn" onclick="openModal('letter','APB')">Draft Letter →</button></div>
+  <div class="sec"><div class="sec-acc sa-r"></div><div class="sec-title">APB — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div><div class="sec-note">No Success% / Failure%</div></div>
+  <div class="ks">
+    <div class="kb kb-a"><div class="kb-lbl">Pendency</div><div class="kb-val">1,24,832</div><div class="kb-hint"><span class="chip cw">↑ 2.1%</span></div><div class="kb-subs"><div><div class="kb-sl">MTD</div><div class="kb-sv">28.4L</div></div></div></div>
+    <div class="kb kb-v"><div class="kb-lbl">Deemed</div><div class="kb-val">8,240</div><div class="kb-hint"><span class="chip cu">↓ 12%</span></div></div>
+    <div class="kb kb-b"><div class="kb-lbl">Pendency Aging T+0</div><div class="kb-val">78,182</div></div>
+    <div class="kb kb-a"><div class="kb-lbl">Pendency Aging T+1</div><div class="kb-val">34,210</div><div class="kb-hint"><span class="chip cw">SLA Watch</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+2</div><div class="kb-val">10,000</div><div class="kb-hint"><span class="chip cd">⚠ Escalate</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+3+</div><div class="kb-val">2,440</div><div class="kb-hint"><span class="chip cd">🔴 Critical</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Pendency — MTD Day-wise</div></div><div class="cb"><div class="cbox h180"><canvas id="apbPMtd"></canvas></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">Pendency Aging Distribution</div></div><div class="cb"><div class="cbox h180"><canvas id="apbAgBar"></canvas></div></div></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ch-l"><div class="ct">Bank-wise APB — Pendency · Pendency Aging · Deemed</div></div><span class="ctag cb-r">Layer 3</span></div>
+    <div class="tw"><table><thead><tr><th>IFN</th><th>Bank Name</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">Flag</th></tr></thead>
+    <tbody id="apbBkTb"></tbody></table></div>
+  </div>
+</div>
+
+
+<!-- ════ ACH CR ════ -->
+<div class="pg" id="pg-achcr">
+  <div class="sec"><div class="sec-acc sa-g"></div><div class="sec-title">ACH CR — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div><div class="sec-note">No Success% / Failure%</div></div>
+  <div class="ks">
+    <div class="kb kb-a"><div class="kb-lbl">Pendency</div><div class="kb-val">82,000</div></div>
+    <div class="kb kb-v"><div class="kb-lbl">Deemed</div><div class="kb-val">4,120</div><div class="kb-hint"><span class="chip cu">↓ 8%</span></div></div>
+    <div class="kb kb-b"><div class="kb-lbl">Pendency Aging T+0</div><div class="kb-val">58,000</div></div>
+    <div class="kb kb-a"><div class="kb-lbl">Pendency Aging T+1</div><div class="kb-val">18,200</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+2</div><div class="kb-val">4,800</div><div class="kb-hint"><span class="chip cd">Escalate</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+3+</div><div class="kb-val">1,000</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Pendency — MTD Day-wise</div></div><div class="cb"><div class="cbox h180"><canvas id="crPMtd"></canvas></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">Deemed — MTD Day-wise</div></div><div class="cb"><div class="cbox h180"><canvas id="crDMtd"></canvas></div></div></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Bank-wise ACH CR — Pendency · Pendency Aging · Deemed</div></div>
+    <div class="tw"><table><thead><tr><th>IFN</th><th>Bank Name</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">Flag</th></tr></thead>
+    <tbody id="crBkTb"></tbody></table></div>
+  </div>
+</div>
+
+
+<!-- ════ ACH DR ════ -->
+<div class="pg" id="pg-achdr">
+  <div class="ab ab-a"><div class="ab-ico">🟡</div><div class="ab-body"><div class="ab-title">ACH DR — 4 banks SLA breached · Pendency Aging T+1: 24,000</div></div><button class="ab-btn" onclick="openModal('letter','ACH DR')">Reminder →</button></div>
+  <div class="sec"><div class="sec-acc sa-a"></div><div class="sec-title">ACH DR — Pendency · Pendency Aging · Deemed</div><div class="sec-rule"></div></div>
+  <div class="ks">
+    <div class="kb kb-a"><div class="kb-lbl">Pendency</div><div class="kb-val">1,24,000</div></div>
+    <div class="kb kb-v"><div class="kb-lbl">Deemed</div><div class="kb-val">8,840</div></div>
+    <div class="kb kb-b"><div class="kb-lbl">Pendency Aging T+0</div><div class="kb-val">89,000</div></div>
+    <div class="kb kb-a"><div class="kb-lbl">Pendency Aging T+1</div><div class="kb-val">24,000</div><div class="kb-hint"><span class="chip cw">12 banks</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+2</div><div class="kb-val">8,560</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Pendency Aging T+3+</div><div class="kb-val">2,440</div></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Bank-wise ACH DR — Pendency · Pendency Aging · Deemed</div></div>
+    <div class="tw"><table><thead><tr><th>IFN</th><th>Bank Name</th><th class="tr">Pendency (FTD)</th><th class="tr">Pendency (MTD)</th><th class="tc">T+0</th><th class="tc">T+1</th><th class="tc">T+2</th><th class="tc">T+3+</th><th class="tr">Deemed (FTD)</th><th class="tr">Deemed (MTD)</th><th class="tc">SLA Status</th><th class="tc">Action</th></tr></thead>
+    <tbody id="drBkTb"></tbody></table></div>
+  </div>
+</div>
+
+
+<!-- ════ AV ════ -->
+<div class="pg" id="pg-av">
+  <div class="sec"><div class="sec-acc sa-a"></div><div class="sec-title">AV — Expired only</div><div class="sec-rule"></div><div class="sec-note">No Success / Failure / Pendency for AV</div></div>
+  <div class="ks">
+    <div class="kb kb-r"><div class="kb-lbl">Expired (FTD)</div><div class="kb-val">3,180</div><div class="kb-hint"><span class="chip cw">↑ 6%</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Expired (MTD)</div><div class="kb-val">64,200</div><div class="kb-hint"><span class="chip cd">Above 60K threshold</span></div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Expired (YTD)</div><div class="kb-val">7.1L</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">Expired — MTD Day-wise</div></div><div class="cb"><div class="cbox h200"><canvas id="avExpMtd"></canvas></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">Expired — YTD Month-wise</div></div><div class="cb"><div class="cbox h200"><canvas id="avExpYtd"></canvas></div></div></div>
+  </div>
+  <div class="card"><div class="ch"><div class="ct">Bank-wise AV — Expired only</div></div>
+    <div class="tw"><table><thead><tr><th>IFN</th><th>Bank Name</th><th class="tr">Expired (FTD)</th><th class="tr">Expired (MTD)</th><th class="tr">Expired (YTD)</th><th class="tc">Δ vs Prev Mth</th><th class="tc">Trend</th><th class="tc">Flag</th></tr></thead>
+    <tbody id="avBkTb"></tbody></table></div>
+  </div>
+</div>
+
+
+<!-- ════ eMANDATE ════ -->
+<div class="pg" id="pg-emandate">
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">eMandate — Initiated · Accepted · Rejected</div><div class="sec-rule"></div></div>
+  <div class="ks">
+    <div class="kb kb-b"><div class="kb-lbl">Initiated</div><div class="kb-val">3,84,210</div></div>
+    <div class="kb kb-g"><div class="kb-lbl">Accepted</div><div class="kb-val">3,35,720</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Rejected</div><div class="kb-val">48,490</div><div class="kb-hint"><span class="chip cd">↑ 2.1%</span></div></div>
+    <div class="kb kb-a"><div class="kb-lbl">Pending</div><div class="kb-val">8,420</div></div>
+  </div>
+  <div class="g6040">
+    <div class="card"><div class="ch"><div class="ct">Auth Mode-wise — Initiated · Accepted · Rejected</div></div>
+      <div class="tw"><table><thead><tr><th>Auth Mode</th><th class="tc">Live Banks</th><th class="tr">Initiated</th><th class="tr">Accepted</th><th class="tr">Rejected</th><th class="tc">Accepted%</th><th class="tc">Rejected%</th><th>Top Rejection Reason</th></tr></thead>
+      <tbody id="emModeTb"></tbody></table></div>
+    </div>
+    <div class="card"><div class="ch"><div class="ct">Rejected — Reason Distribution</div></div><div class="cb"><div class="cbox h200"><canvas id="emRejPie"></canvas></div></div></div>
+  </div>
+</div>
+
+
+<!-- ════ MMS ════ -->
+<div class="pg" id="pg-mms">
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">MMS — Initiated · Accepted · Rejected</div><div class="sec-rule"></div></div>
+  <div class="ks">
+    <div class="kb kb-b"><div class="kb-lbl">Initiated</div><div class="kb-val">2,14,000</div></div>
+    <div class="kb kb-g"><div class="kb-lbl">Accepted</div><div class="kb-val">1,89,176</div></div>
+    <div class="kb kb-r"><div class="kb-lbl">Rejected</div><div class="kb-val">24,824</div><div class="kb-hint"><span class="chip cd">↑ 2.4%</span></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ch"><div class="ct">MTD — Initiated · Accepted · Rejected</div></div><div class="cb"><div class="cbox h200"><canvas id="mmsMtdC"></canvas></div></div></div>
+    <div class="card"><div class="ch"><div class="ct">Top Rejection Reasons</div></div><div class="cb" id="mmsRejL"></div></div>
+  </div>
+</div>
+
+
+<!-- ════ RED FLAGS ════ -->
+<div class="pg" id="pg-redflags">
+  <div class="sec"><div class="sec-acc sa-r"></div><div class="sec-title" style="color:var(--r2)">Active Red Flags &amp; Exception Alerts</div><div class="sec-rule"></div>
+    <div class="sec-stabs" id="rfTG">
+      <div class="stab on" onclick="swRF('all',this)">All (11)</div>
+      <div class="stab" onclick="swRF('H',this)">🔴 High (6)</div>
+      <div class="stab" onclick="swRF('M',this)">🟡 Medium (3)</div>
+      <div class="stab" onclick="swRF('P',this)">✕ Cancel/Amend (2)</div>
+      <div class="stab" onclick="swRF('AI',this)">🤖 AI (2)</div>
+    </div>
+  </div>
+  <div class="fg" id="flagGrid"></div>
+  <div class="card"><div class="ch"><div class="ct">SLA / Threshold Breach Log</div><span class="ctag cb-r">Active</span></div>
+    <div class="tw"><table><thead><tr><th>Product</th><th>Bank</th><th class="tc">Field</th><th class="tc">Threshold</th><th class="tc">Actual</th><th class="tc">Since</th><th class="tc">Severity</th><th class="tc">Action</th></tr></thead>
+    <tbody id="rfSLATb"></tbody></table></div>
+  </div>
+</div>
+
+
+<!-- ════ BANK-WISE ════ -->
+<div class="pg" id="pg-bankwise">
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">Bank-wise — All Products · Applicable Fields Only</div><div class="sec-rule"></div></div>
+  <div class="card"><div class="ch"><div class="ch-l"><div class="ct">Bank × Product Matrix</div><div class="cs">APB/ACH: Pendency+Deemed · AV: Expired · eMandate: IAR · API/BASE: TD%+BD% · Cancel/Amend: Decline%</div></div><span class="ctag cb-b">Full Matrix</span></div>
+    <div class="tw"><table>
+      <thead>
+        <tr><th rowspan="2">IFN</th><th rowspan="2">Bank Name</th><th colspan="2" class="tc">APB</th><th colspan="2" class="tc">ACH CR</th><th colspan="2" class="tc">ACH DR</th><th class="tc" rowspan="2">AV Expired</th><th colspan="3" class="tc">eMandate</th><th colspan="2" class="tc">NACH API</th><th colspan="2" class="tc">BASE</th><th colspan="2" class="tc" style="background:rgba(190,24,93,.06);color:var(--p1)">Cancel / Amendment</th><th rowspan="2" class="tc">Flag</th></tr>
+        <tr><th class="tr">Pendency</th><th class="tc">Deemed</th><th class="tr">Pendency</th><th class="tc">Deemed</th><th class="tr">Pendency</th><th class="tc">Deemed</th><th class="tr">Initiated</th><th class="tr">Accepted</th><th class="tc">Rejected</th><th class="tc">TD%</th><th class="tc">BD%</th><th class="tc">TD%</th><th class="tc">BD%</th><th class="tc" style="color:var(--p1)">Cancel Dec%</th><th class="tc" style="color:var(--p1)">Amend Dec%</th></tr>
+      </thead>
+      <tbody id="bkTb"></tbody>
+    </table></div>
+  </div>
+</div>
+
+
+<!-- ════ PERFORMANCE LETTERS ════ -->
+<div class="pg" id="pg-letters">
+  <div class="sec"><div class="sec-acc sa-b"></div><div class="sec-title">Performance Letters</div><div class="sec-rule"></div></div>
+  <div class="g4">
+    <div class="card" style="cursor:pointer;text-align:center;padding:22px" onclick="openModal('letter','APB')"><div style="font-size:28px;margin-bottom:8px">📬</div><div style="font-size:12px;font-weight:700;margin-bottom:4px">APB — Pendency Aging</div><div style="font-size:10px;color:var(--ts)">T+2 breach letter</div></div>
+    <div class="card" style="cursor:pointer;text-align:center;padding:22px" onclick="openModal('letter','NACH API')"><div style="font-size:28px;margin-bottom:8px">📬</div><div style="font-size:12px;font-weight:700;margin-bottom:4px">NACH API — TD Spike</div><div style="font-size:10px;color:var(--ts)">Technical Decline letter</div></div>
+    <div class="card card-ca" style="cursor:pointer;text-align:center;padding:22px" onclick="openModal('letter','Cancel Mandates')"><div style="font-size:28px;margin-bottom:8px">📬</div><div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:4px">Cancel Mandates — Code 211</div><div style="font-size:10px;color:var(--ts)">Late response decline letter</div></div>
+    <div class="card card-ca" style="cursor:pointer;text-align:center;padding:22px" onclick="openModal('letter','Amendment')"><div style="font-size:28px;margin-bottom:8px">📬</div><div style="font-size:12px;font-weight:700;color:var(--p1);margin-bottom:4px">Amendment — Code 123</div><div style="font-size:10px;color:var(--ts)">RespData tag format letter</div></div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="mov" id="mainMov">
+  <div class="modal">
+    <div class="mhdr"><div class="mt" id="mT">Detail</div><div class="mcls" onclick="cM()">✕</div></div>
+    <div class="mbody" id="mB"></div>
+    <div class="mftr"><button class="mbtn mbs" onclick="cM()">Close</button><button class="mbtn mbp">⬇ Export .docx</button></div>
+  </div>
+</div>
+
+<script>
+/* ── CLOCK ── */
+(function tick(){
+  const n=new Date(),p=v=>String(v).padStart(2,'0');
+  document.getElementById('hTime').textContent=`${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+  const mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('hDate').textContent=`${p(n.getDate())}-${mo[n.getMonth()]}-${n.getFullYear()}`;
+  setTimeout(tick,1000);
+})();
+
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const fK=n=>n>=10000000?(n/10000000).toFixed(2)+'Cr':n>=100000?(n/100000).toFixed(1)+'L':n>=1000?(n/1000).toFixed(1)+'K':String(n);
+Chart.defaults.font.family="'Inter',sans-serif";
+Chart.defaults.font.size=11;
+Chart.defaults.color='#44607a';
+const days20=Array.from({length:20},(_,i)=>(i+1)+'/4');
+const MONTHS=['Jan','Feb','Mar','Apr'];
+const ci={};
+
+const BANKS=[
+  {ifn:'SBIN',nm:'State Bank of India'},{ifn:'HDFC',nm:'HDFC Bank'},{ifn:'ICIC',nm:'ICICI Bank'},
+  {ifn:'PUNB',nm:'Punjab National Bank'},{ifn:'BARB',nm:'Bank of Baroda'},{ifn:'UTIB',nm:'Axis Bank'},
+  {ifn:'IPPB',nm:'India Post Payments Bank'},{ifn:'BKID',nm:'Bank of India'},{ifn:'IDIB',nm:'Indian Bank'},
+  {ifn:'CNRB',nm:'Canara Bank'},{ifn:'UBIN',nm:'Union Bank of India'},{ifn:'IDFB',nm:'IDFC First Bank'},
+  {ifn:'KKBK',nm:'Kotak Mahindra Bank'},{ifn:'YESB',nm:'Yes Bank'},{ifn:'ORBC',nm:'OBC / Punjab & Sind'}
+];
+
+/* ── Cancel/Amendment Reason Codes (standalone) ── */
+const CA_CODES=[
+  {code:'211',desc:'Late Response — request no longer pending when response received',applies:'Cancel + Amendment',ftd:R(4000,8000),mtd:R(80000,140000),share:58.4,trend:'↑ Rising',banks:'IDIB · BARB · PUNB',root:'Bank API response latency / CBS batch job timing conflict',resolution:'CBS batch job scheduling audit · API timeout extension'},
+  {code:'123',desc:'RespData tag missing in API response — format non-compliance',applies:'Amendment',ftd:R(2000,5000),mtd:R(40000,80000),share:28.6,trend:'→ Stable',banks:'BARB · ICIC · UTIB',root:'Bank SDK not including RespData tag per NPCI API spec',resolution:'SDK compliance update · Developer advisory'},
+  {code:'132',desc:'Missing attribute for Destination tag — malformed request',applies:'Cancel + Amendment',ftd:R(800,2000),mtd:R(16000,32000),share:8.2,trend:'↓ Improving',banks:'HDFC · UTIB · IDFB',root:'Bank API request missing mandatory Destination attributes',resolution:'SDK update · Gateway validation'},
+  {code:'149',desc:'Attribute result value invalid — response format error',applies:'Amendment',ftd:R(300,800),mtd:R(6000,12000),share:4.8,trend:'→ Stable',banks:'ICIC · HDFC · YESB',root:'Bank API Attribute Result field format error',resolution:'API fix · SDK update'}
+];
+
+/* ── NACH API RC (TD/BD only) ── */
+const API_RC=[
+  {code:'E10001',desc:'UIDAI API Failure — authentication unsuccessful',type:'TD',ftd:R(80000,120000),mtd:R(1400000,1800000),share:33.1,banks:'SBIN · PUNB · BKID'},
+  {code:'Code 100',desc:'Already Mapped Seeding — duplicate seeding',type:'BD',ftd:R(50000,80000),mtd:R(900000,1200000),share:19.9,banks:'SBIN · PUNB · BKID · BARB'},
+  {code:'536',desc:'Bank CBS Not Responding — endpoint unresponsive',type:'TD',ftd:R(20000,40000),mtd:R(400000,650000),share:7.4,banks:'SBIN · PUNB · BKID'},
+  {code:'999',desc:'NPCI Mapper Connectivity — mapper API intermittent',type:'TD',ftd:R(15000,30000),mtd:R(300000,480000),share:5.0,banks:'SBIN · BARB · UTIB'},
+  {code:'B09',desc:'CBS No Data for Aadhaar — no account record in CBS',type:'BD',ftd:R(14000,28000),mtd:R(280000,440000),share:4.6,banks:'IDIB · PUNB · BARB'},
+  {code:'998',desc:'Invalid Aadhaar / Virtual ID — expired or malformed',type:'BD',ftd:R(12000,24000),mtd:R(240000,400000),share:4.4,banks:'SBIN · ICIC · CNRB'},
+  {code:'B08',desc:'Aadhaar Not Seeded in Bank CBS — mapper-CBS sync gap',type:'BD',ftd:R(10000,20000),mtd:R(200000,360000),share:3.8,banks:'IDIB · SBIN · BKID'},
+  {code:'B06',desc:'Account Holder Name Mismatch with CBS',type:'BD',ftd:R(9000,18000),mtd:R(180000,320000),share:3.8,banks:'PUNB · BARB · ICIC'},
+  {code:'331',desc:'Aadhaar locked by holder — self-locked via UIDAI portal',type:'BD',ftd:R(4000,10000),mtd:R(80000,160000),share:1.4,banks:'SBIN · CNRB · KKBK'},
+  {code:'B02',desc:'Account holder expired — customer deceased',type:'BD',ftd:R(2000,6000),mtd:R(40000,90000),share:0.7,banks:'SBIN · CNRB · UBIN'}
+];
+
+/* ── BASE RC (TD/BD only) ── */
+const BASE_RC=[
+  {code:'B09',desc:'No CBS data for Aadhaar',type:'BD',ftd:R(8000,16000),mtd:R(160000,280000),share:28.4,banks:'IDIB · PUNB · BARB',root:'CBS-mapper sync gap'},
+  {code:'536',desc:'Bank CBS Not Responding',type:'TD',ftd:R(6000,12000),mtd:R(120000,200000),share:21.6,banks:'SBIN · PUNB · BKID',root:'CBS endpoint unresponsive'},
+  {code:'B08',desc:'Aadhaar Not Seeded in Bank CBS',type:'BD',ftd:R(5000,10000),mtd:R(100000,180000),share:17.8,banks:'IDIB · SBIN · BKID',root:'Mapper-CBS sync gap'},
+  {code:'B06',desc:'Name Mismatch CBS vs Mandate',type:'BD',ftd:R(3000,6000),mtd:R(60000,100000),share:11.2,banks:'PUNB · BARB · ICIC',root:'Data quality at onboarding'},
+  {code:'998',desc:'Invalid Aadhaar / Virtual ID',type:'BD',ftd:R(2000,5000),mtd:R(40000,80000),share:8.6,banks:'SBIN · ICIC · CNRB',root:'Expired VID / data entry error'},
+  {code:'B02',desc:'Account holder expired',type:'BD',ftd:R(1000,3000),mtd:R(20000,40000),share:4.8,banks:'SBIN · CNRB · UBIN',root:'Deceased account in mandate'}
+];
+
+const PRODS=[
+  {id:'APB',c:'#dc2626',pendency:124832,deemed:8240,t0:78182,t1:34210,t2:10000,t3:2440,flag:'Pendency Aging T+2 elevated — 12 banks',fsev:'H'},
+  {id:'ACH CR',c:'#16a34a',pendency:82000,deemed:4120,t0:58000,t1:18200,t2:4800,t3:1000,flag:'Bihar Gramin T+2 breach',fsev:'M'},
+  {id:'ACH DR',c:'#2563eb',pendency:124000,deemed:8840,t0:89000,t1:24000,t2:8560,t3:2440,flag:'4 banks SLA breached T+1',fsev:'H'},
+  {id:'AV',c:'#d97706',expired:3180,expMtd:64200,expYtd:710000,flag:'Expired MTD above 60K threshold',fsev:'M'},
+  {id:'eMandate',c:'#7c3aed',initiated:384210,accepted:335720,rejected:48490,pending:8420,flag:'Aadhaar Rejected: 8,19,611',fsev:'M'},
+  {id:'MMS',c:'#0891b2',initiated:214000,accepted:189176,rejected:24824,flag:null,fsev:'G'}
+];
+
+/* ── NAV ── */
+function nav(p){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('on'));
+  document.getElementById('pg-'+p)?.classList.add('on');
+  document.querySelectorAll('.si').forEach(x=>x.classList.remove('on'));
+  document.getElementById('si-'+p)?.classList.add('on');
+  const t={summary:'Summary Overview',ca:'Cancel / Amendment',api:'NACH API',base:'BASE',apb:'APB',achcr:'ACH CR',achdr:'ACH DR',av:'AV',emandate:'eMandate',mms:'MMS',redflags:'Red Flags',bankwise:'Bank-wise',letters:'Performance Letters'};
+  document.getElementById('hPgT').textContent=t[p]||p;
+  document.getElementById('hBc').textContent=p==='ca'?'Cancel Mandates · Amendment · Reason Codes · Bank-wise':'All Products · FTD';
+  const inits={summary:initSummary,ca:initCA,api:initAPI,base:initBASE,apb:initAPB,achcr:initACHCR,achdr:initACHDR,av:initAV,emandate:initEMandate,mms:initMMS,redflags:initRedFlags,bankwise:initBankwise};
+  if(inits[p]&&!ci[p]) inits[p]();
+}
+function sP(el,gid){document.querySelectorAll('#'+gid+' .pp').forEach(p=>p.classList.remove('on'));el.classList.add('on')}
+
+/* ── CANCEL/AMENDMENT SUB-TABS ── */
+function swCA(view,el){
+  document.querySelectorAll('#caTabs .stab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  ['cancel','amendment','bankwise','rc','trend'].forEach(v=>{ const el=document.getElementById('cav-'+v); if(el) el.style.display=v===view?'':'none'; });
+  if(view==='rc'&&!ci['carc']){ci['carc']=true;initCARCCharts();}
+  if(view==='trend'&&!ci['catrend']){ci['catrend']=true;initCATrendCharts();}
+  if(view==='bankwise'&&!ci['cabankwise']){ci['cabankwise']=true;initCABankwiseCharts();}
+}
+
+/* ── SUMMARY ── */
+window.addEventListener('load',()=>initSummary());
+function initSummary(){
+  ci.summary=true;
+  document.getElementById('g1').innerHTML=['APB','ACH CR','ACH DR'].map(id=>buildCard(PRODS.find(x=>x.id===id))).join('');
+  document.getElementById('g2').innerHTML=['AV','eMandate','MMS'].map(id=>buildCard(PRODS.find(x=>x.id===id))).join('');
+  mkLine2('sPendC',['APB Pendency','ACH CR Pendency','ACH DR Pendency'],
+    [Array.from({length:20},()=>R(100000,140000)),Array.from({length:20},()=>R(70000,95000)),Array.from({length:20},()=>R(110000,135000))],
+    ['#dc2626','#16a34a','#2563eb']);
+  mkLine2('sDeemedC',['APB Deemed','ACH CR Deemed','ACH DR Deemed'],
+    [Array.from({length:20},()=>R(6000,10000)),Array.from({length:20},()=>R(3000,5500)),Array.from({length:20},()=>R(7000,11000))],
+    ['#dc2626','#16a34a','#2563eb']);
+  // PoP
+  document.getElementById('popTb').innerHTML=PRODS.map(p=>{
+    const pa=['APB','ACH CR','ACH DR'].includes(p.id);const av=p.id==='AV';
+    const _=`<span style="font-size:9px;color:var(--tq);font-family:'JetBrains Mono',monospace">—</span>`;
+    return `<tr><td class="tbn">${p.id}</td>
+      <td class="tr mono">${pa?fK(p.pendency):_}</td><td class="tr mono">${pa?fK(p.pendency*R(18,22)):_}</td><td class="tc">${pa?`<span class="chip cw">+${R(1,8)}%</span>`:_}</td>
+      <td class="tr mono">${pa?fK(p.deemed):_}</td><td class="tr mono">${pa?fK(p.deemed*R(18,22)):_}</td><td class="tc">${pa?`<span class="chip ${R(0,1)?'cd':'cu'}">${R(0,1)?'↑':'↓'} ${R(1,10)}%</span>`:_}</td>
+      <td class="tr mono">${av?fK(p.expired):_}</td><td class="tr mono">${av?fK(p.expMtd):_}</td><td class="tc">${av?`<span class="chip cw">↑ 6%</span>`:_}</td>
+      <td class="tc">${pa?`<span class="bdg bwrn">${fK(p.t1)}</span>`:_}</td>
+      <td class="tc">${pa?`<span class="bdg bbad">${fK(p.t2)}</span>`:_}</td>
+      <td class="tc">${pa?`<span class="bdg bbad">${fK(p.t3)}</span>`:_}</td>
+      <td class="tc"><span class="dot ${p.fsev==='H'?'derr':p.fsev==='M'?'dwrn':'dok'}"></span></td></tr>`;
+  }).join('');
+  // Insights
+  document.getElementById('insL').innerHTML=[
+    {ico:'🔴',t:'APB T+2 Pendency Aging — 12 banks above threshold',d:'T+2: 10,000 · T+3+: 2,440 · Deemed: 8,240',a:'→ Performance letters to 12 banks'},
+    {ico:'🔴',t:'ACH DR 4 banks SLA breached (T+1)',d:'24,000 T+1 · 8,560 T+2 · Deemed risk',a:'→ Trigger reminder + escalate T+2'},
+    {ico:'🔴',t:'Cancel Mandates Decline 16.7% · Code 211',d:'IDIB · BARB · PUNB top offenders — see dedicated tab',a:'→ Cancel/Amendment tab → Draft letter'},
+    {ico:'🟡',t:'AV Expired ↑6% · MTD above 60,000',d:'FTD: 3,180 · MTD: 64,200',a:'→ Advisory circular'},
+    {ico:'🟡',t:'Amendment Decline 16.0% · Code 123 (RespData tag)',d:'BARB · ICIC · UTIB — SDK non-compliance',a:'→ Cancel/Amendment tab → Developer advisory'}
+  ].map(i=>`<div class="ins-item"><div class="ins-ico">${i.ico}</div><div><div class="ins-t">${i.t}</div><div class="ins-d">${i.d}</div><div class="ins-a">${i.a}</div></div></div>`).join('');
+}
+
+function buildCard(p){
+  if(!p)return'';
+  const pa=['APB','ACH CR','ACH DR'].includes(p.id);
+  const av=p.id==='AV';const em=['eMandate','MMS'].includes(p.id);
+  const scope=pa?'Pendency · Aging · Deemed':av?'Expired':em?'Initiated · Accepted · Rejected':'';
+  let body='';
+  if(pa){
+    body=`<div class="pm-2" style="margin-bottom:8px">
+      <div class="pm"><div class="pm-lbl">Pendency</div><div class="pm-val" style="color:var(--a2)">${fK(p.pendency)}</div></div>
+      <div class="pm"><div class="pm-lbl">Deemed</div><div class="pm-val">${fK(p.deemed)}</div></div>
+    </div>
+    <div style="font-size:8px;font-weight:600;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.4px;color:var(--tm);margin-bottom:5px">Pendency Aging</div>
+    <div class="aging-strip">
+      <div class="ag-cell ag0"><div class="ag-lbl">T+0</div><div class="ag-val">${fK(p.t0)}</div></div>
+      <div class="ag-cell ag1"><div class="ag-lbl">T+1</div><div class="ag-val">${fK(p.t1)}</div></div>
+      <div class="ag-cell ag2"><div class="ag-lbl">T+2</div><div class="ag-val">${fK(p.t2)}</div></div>
+      <div class="ag-cell ag3"><div class="ag-lbl">T+3+</div><div class="ag-val">${fK(p.t3)}</div></div>
+    </div>`;
+  } else if(av){
+    body=`<div class="pm" style="margin-bottom:7px;background:var(--rpale);border-color:var(--rbrd)"><div class="pm-lbl">Expired</div><div class="pm-val" style="color:var(--r2);font-size:22px">${fK(p.expired)}</div><div class="pm-sub"><span class="chip cw">↑ 6%</span></div></div>
+    <div class="pm-2"><div class="pm"><div class="pm-lbl">Expired (MTD)</div><div class="pm-val" style="font-size:14px;color:var(--r2)">${fK(p.expMtd)}</div></div><div class="pm"><div class="pm-lbl">Expired (YTD)</div><div class="pm-val" style="font-size:14px">${fK(p.expYtd)}</div></div></div>`;
+  } else if(em){
+    body=`<div class="pm-3">
+      <div class="pm"><div class="pm-lbl">Initiated</div><div class="pm-val" style="font-size:14px;color:var(--b1)">${fK(p.initiated)}</div></div>
+      <div class="pm" style="background:var(--gpale);border-color:var(--gbrd)"><div class="pm-lbl">Accepted</div><div class="pm-val" style="font-size:14px;color:var(--g2)">${fK(p.accepted)}</div></div>
+      <div class="pm" style="background:var(--rpale);border-color:var(--rbrd)"><div class="pm-lbl">Rejected</div><div class="pm-val" style="font-size:14px;color:var(--r2)">${fK(p.rejected)}</div></div>
+    </div>`;
+  }
+  const fc=p.fsev==='H'?'pf-r':p.fsev==='M'?'pf-a':'pf-g';
+  const fi=p.fsev==='H'?'🔴':p.fsev==='M'?'🟡':'✅';
+  return `<div class="pcard" onclick="nav('${p.id.toLowerCase().replace(' ','')}')">
+    <div class="pcard-top" style="background:${p.c}"></div>
+    <div class="pcard-hdr"><div><div class="pcard-name">${p.id}</div><div class="pcard-scope">${scope}</div></div>${p.fsev!=='G'?`<div style="width:8px;height:8px;border-radius:50%;background:${p.fsev==='H'?'#f87171':'#fbbf24'};margin-top:4px;flex-shrink:0;animation:lp 1.4s ease-in-out infinite"></div>`:''}</div>
+    <div class="pcard-body">${body}</div>
+    <div class="pcard-footer ${fc}"><span>${fi}</span><span class="pcard-footer-text" style="flex:1">${p.flag||'No active flags'}</span>${p.flag?`<button class="pf-btn" onclick="event.stopPropagation();nav('redflags')">Details</button>`:''}</div>
+  </div>`;
+}
+
+/* ── CANCEL / AMENDMENT INIT ── */
+function initCA(){
+  ci.ca=true;
+  // Cancel bank table
+  buildCABankTable('caCancelBankTb','cancel');
+  buildCABankTable('caAmendBankTb','amendment');
+  // Charts
+  new Chart(document.getElementById('caCancelMtd'),{type:'bar',data:{labels:days20,datasets:[
+    {label:'Cancel Initiated',data:Array.from({length:20},()=>R(10000,16000)),backgroundColor:'rgba(190,24,93,.25)',borderRadius:2},
+    {label:'Cancel Declined',data:Array.from({length:20},()=>R(1500,2800)),backgroundColor:'rgba(190,24,93,.7)',borderRadius:2}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  new Chart(document.getElementById('caCancelPie'),{type:'doughnut',data:{labels:['Code 211 — Late Response','Code 123 — Format Error','Code 132 — Missing Attr','Other'],datasets:[{data:[58,28,9,5],backgroundColor:['#be185d','#ec4899','#7c3aed','#9ca3af'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  new Chart(document.getElementById('caAmendMtd'),{type:'bar',data:{labels:days20,datasets:[
+    {label:'Amendment Requested',data:Array.from({length:20},()=>R(3500,5500)),backgroundColor:'rgba(124,58,237,.25)',borderRadius:2},
+    {label:'Amendment Declined',data:Array.from({length:20},()=>R(500,900)),backgroundColor:'rgba(124,58,237,.7)',borderRadius:2}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  new Chart(document.getElementById('caAmendPie'),{type:'doughnut',data:{labels:['Code 123 — RespData Missing','Code 132 — Missing Attr','Code 149 — Invalid Attr','Other'],datasets:[{data:[65,20,10,5],backgroundColor:['#7c3aed','#a78bfa','#be185d','#9ca3af'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  // PoP Table
+  document.getElementById('caPoPTb').innerHTML=[
+    ['Cancel Mandates Initiated','12,840','2,56,000','30.7L','+2.1%','+4.2%'],
+    ['Cancel Mandates Declined','2,142','42,840','5.14L','↑ 3.2pp','↑ 1.8pp'],
+    ['Cancel Decline%','16.7%','16.7% avg','16.7% avg','↑ 3pp','↑ 2pp'],
+    ['Amendment Requested','4,280','85,600','10.3L','+1.5%','+3.1%'],
+    ['Amendment Declined','684','13,696','1.64L','↑ 2pp','↑ 1.5pp'],
+    ['Amendment Decline%','16.0%','16.0% avg','16.0% avg','↑ 2pp','↑ 1pp']
+  ].map(([m,ftd,mtd,ytd,df,dm])=>`<tr><td class="tbn">${m}</td><td class="tr mono">${ftd}</td><td class="tr mono">${mtd}</td><td class="tr mono">${ytd}</td>
+    <td class="tc"><span class="chip ${df.includes('↑')?'cw':'cu'}">${df}</span></td>
+    <td class="tc"><span class="chip ${dm.includes('↑')?'cw':'cu'}">${dm}</span></td></tr>`).join('');
+}
+
+function buildCABankTable(tbId,type){
+  const tb=document.getElementById(tbId);if(!tb)return;
+  const topCodes=type==='cancel'?['211','132']:['123','132','149'];
+  tb.innerHTML=BANKS.map((b,i)=>{
+    const ini=R(500,8000),dec=Math.floor(ini*R(5,30)/100),pct=(dec/ini*100).toFixed(1);
+    const over=parseFloat(pct)>15;
+    const tc=CA_CODES[i%topCodes.length>CA_CODES.length-1?0:i%2].code;
+    const tc2=CA_CODES[(i+1)%CA_CODES.length].code;
+    return `<tr class="er tr-ca ${over?'tr-crit':''}" onclick="toggleSR(this,'ca-${type}-${i}')">
+      <td class="mono">${i+1}</td><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(ini)}</td><td class="tr mono">${fK(ini*R(18,22))}</td>
+      <td class="tr mono" style="color:${over?'var(--r2)':'inherit'}">${fK(dec)}</td>
+      <td class="tr mono">${fK(dec*R(18,22))}</td>
+      <td class="tc"><span class="bdg ${over?'bbad':parseFloat(pct)>10?'bwrn':'bok'}">${pct}%</span></td>
+      <td class="tc"><span class="bdg ${over?'bbad':parseFloat(pct)>10?'bwrn':'bok'}">${(parseFloat(pct)*R(95,105)/100).toFixed(1)}%</span></td>
+      <td class="tc"><span class="bdg ${over?'bbad':'bwrn'}">${over?'⚠ Above 15%':'Within'}</span></td>
+      <td class="tc"><span class="rc-pill rp-ca">${tc}</span></td>
+      <td class="tc"><span class="rc-pill rp-ca">${tc2}</span></td>
+      <td class="tc"><span class="chip ${R(0,1)?'cd':'cw'}">${R(0,1)?'↑ Worse':'→ Stable'}</span></td>
+      <td class="tc">${over?`<button style="padding:2px 8px;font-size:9.5px;font-weight:700;border:none;border-radius:4px;cursor:pointer;background:var(--p1);color:#fff;font-family:'Inter',sans-serif" onclick="event.stopPropagation();openModal('letter','${type==='cancel'?'Cancel Mandates':'Amendment'}')">Letter</button>`:'—'}</td>
+    </tr>
+    <tr class="sr" id="ca-${type}-${i}"><td colspan="14"><div class="sr-in sr-in-ca">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--p1);margin-bottom:7px">${type.toUpperCase()} DECLINE CODE BREAKDOWN — ${b.nm.toUpperCase()}</div>
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        ${CA_CODES.map(c=>`<div><div style="font-size:8px;color:var(--tm);font-family:'JetBrains Mono',monospace;margin-bottom:2px">${c.code}</div><div class="rc-pill rp-ca">${c.applies.includes(type.charAt(0).toUpperCase()+type.slice(1))||type==='cancel'?c.applies:'—'}</div><div style="font-size:15px;font-weight:800;color:var(--p1);margin-top:3px">${R(5,60)}%</div><div style="font-size:9px;color:var(--ts)">${c.desc.substring(0,28)}</div></div>`).join('')}
+      </div>
+    </div></td></tr>`;
+  }).join('');
+}
+
+function initCARCCharts(){
+  const tb=document.getElementById('caRCTb');
+  tb.innerHTML=CA_CODES.map((c,i)=>`<tr class="er" onclick="toggleSR(this,'crc-${i}')">
+    <td class="mono">${i+1}</td>
+    <td><span class="rc-pill rp-ca">${c.code}</span></td>
+    <td style="font-size:11px">${c.desc}</td>
+    <td class="tc" style="font-size:10px;color:var(--p1)">${c.applies}</td>
+    <td class="tr mono">${fK(c.ftd)}</td><td class="tr mono">${fK(c.mtd)}</td>
+    <td class="tc"><span class="bdg ${c.share>50?'bbad':c.share>20?'bwrn':'binfo'}">${c.share}%</span></td>
+    <td class="tc" style="font-size:10.5px;color:${c.trend.includes('↑')?'var(--r2)':'var(--ts)'}">${c.trend}</td>
+    <td class="tc" style="font-size:10px;color:var(--ts)">${c.banks}</td>
+    <td style="font-size:10px;color:var(--ts)">${c.root}</td>
+    <td style="font-size:10px;color:var(--ts)">${c.resolution}</td>
+  </tr>
+  <tr class="sr" id="crc-${i}"><td colspan="11"><div class="sr-in sr-in-ca">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--p1);margin-bottom:7px">BANK CONTRIBUTION — Code ${c.code} · ${c.desc}</div>
+    <div class="tw"><table style="font-size:11px"><thead class="th-ca"><tr><th>IFN</th><th>Bank</th><th class="tr">FTD</th><th class="tr">MTD</th><th class="tc">Share%</th><th class="tc">Trend</th></tr></thead>
+    <tbody>${BANKS.slice(0,5).map(b=>`<tr><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td><td class="tr mono">${fK(R(500,c.ftd/2))}</td><td class="tr mono">${fK(R(5000,c.mtd/2))}</td><td class="tc"><span class="bdg binfo">${R(5,35)}%</span></td><td class="tc"><span class="chip ${R(0,1)?'cd':'cu'}">${R(0,1)?'↑':'↓'}</span></td></tr>`).join('')}</tbody></table></div>
+  </div></td></tr>`).join('');
+  new Chart(document.getElementById('caRCPie'),{type:'doughnut',data:{labels:CA_CODES.map(c=>`Code ${c.code}`),datasets:[{data:CA_CODES.map(c=>c.share),backgroundColor:['#be185d','#7c3aed','#ec4899','#a78bfa'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  new Chart(document.getElementById('caRCTrend'),{type:'line',data:{labels:days20,datasets:[
+    {label:'Code 211',data:Array.from({length:20},()=>R(4000,9000)),borderColor:'#be185d',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+    {label:'Code 123',data:Array.from({length:20},()=>R(2000,5000)),borderColor:'#7c3aed',borderWidth:2,fill:false,tension:.4,pointRadius:0,borderDash:[3,2]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+}
+
+function initCATrendCharts(){
+  new Chart(document.getElementById('caTrendMtd'),{type:'line',data:{labels:days20,datasets:[
+    {label:'Cancel Decline%',data:Array.from({length:20},()=>R(12,22)),borderColor:'#be185d',borderWidth:2,fill:true,backgroundColor:'rgba(190,24,93,.07)',tension:.4,pointRadius:0},
+    {label:'Amendment Decline%',data:Array.from({length:20},()=>R(10,20)),borderColor:'#7c3aed',borderWidth:2,fill:false,tension:.4,pointRadius:0,borderDash:[3,2]},
+    {label:'Threshold (15%)',data:Array(20).fill(15),borderColor:'#dc2626',borderWidth:1,fill:false,pointRadius:0,borderDash:[6,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{y:{ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+  new Chart(document.getElementById('caTrendYtd'),{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'Cancel Initiated',data:[240000,258000,248000,256800],backgroundColor:'rgba(190,24,93,.4)',borderRadius:3},
+    {label:'Cancel Declined',data:[38400,41280,39680,42840],backgroundColor:'rgba(190,24,93,.8)',borderRadius:3}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{stacked:false,grid:{display:false}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  new Chart(document.getElementById('caBankTrendLine'),{type:'line',data:{labels:days20,datasets:[
+    {label:'IDIB',data:Array.from({length:20},()=>R(18,28)),borderColor:'#dc2626',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+    {label:'BARB',data:Array.from({length:20},()=>R(15,24)),borderColor:'#d97706',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+    {label:'PUNB',data:Array.from({length:20},()=>R(14,22)),borderColor:'#7c3aed',borderWidth:2,fill:false,tension:.4,pointRadius:0},
+    {label:'Threshold',data:Array(20).fill(15),borderColor:'#dc2626',borderWidth:1,fill:false,pointRadius:0,borderDash:[5,3]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{y:{ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+}
+
+function initCABankwiseCharts(){
+  // Combined bank table
+  const tb=document.getElementById('caBankCombTb');
+  tb.innerHTML=BANKS.map((b,i)=>{
+    const ci2=R(500,8000),cd=Math.floor(ci2*R(5,30)/100),cp=(cd/ci2*100).toFixed(1);
+    const ai=R(200,3000),ad=Math.floor(ai*R(5,25)/100),ap=(ad/ai*100).toFixed(1);
+    const over=parseFloat(cp)>15||parseFloat(ap)>15;
+    return `<tr class="${over?'tr-crit':''}">
+      <td class="mono">${i+1}</td><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(ci2)}</td><td class="tr mono">${fK(cd)}</td>
+      <td class="tc"><span class="bdg ${parseFloat(cp)>15?'bbad':parseFloat(cp)>10?'bwrn':'bok'}">${cp}%</span></td>
+      <td class="tr mono">${fK(ai)}</td><td class="tr mono">${fK(ad)}</td>
+      <td class="tc"><span class="bdg ${parseFloat(ap)>15?'bbad':parseFloat(ap)>10?'bwrn':'bok'}">${ap}%</span></td>
+      <td class="tc"><span class="rc-pill rp-ca">211</span></td>
+      <td class="tc"><span class="rc-pill rp-ca">123</span></td>
+      <td class="tc">${over?'🔴':parseFloat(cp)>10||parseFloat(ap)>10?'🟡':'🟢'}</td>
+    </tr>`;
+  }).join('');
+  const bLabels=BANKS.slice(0,8).map(b=>b.ifn);
+  new Chart(document.getElementById('caBankBar'),{type:'bar',data:{labels:bLabels,datasets:[{label:'Cancel Decline%',data:bLabels.map(()=>R(5,28)),backgroundColor:'rgba(190,24,93,.7)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+  new Chart(document.getElementById('caAmendBar'),{type:'bar',data:{labels:bLabels,datasets:[{label:'Amendment Decline%',data:bLabels.map(()=>R(4,24)),backgroundColor:'rgba(124,58,237,.7)',borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+}
+
+/* ── OTHER PAGE INITS ── */
+function initAPI(){
+  ci.api=true;
+  document.getElementById('apiRCTb').innerHTML=API_RC.map((rc,i)=>`<tr>
+    <td class="mono">${i+1}</td>
+    <td><span class="rc-pill ${rc.type==='TD'?'rp-td':'rp-bd'}">${rc.code}</span></td>
+    <td style="font-size:11px">${rc.desc}</td>
+    <td class="tc"><span style="font-size:8.5px;font-weight:700;padding:1.5px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;background:${rc.type==='TD'?'rgba(220,38,38,.1)':'rgba(217,119,6,.1)'};color:${rc.type==='TD'?'var(--r2)':'var(--a1)'}">${rc.type}</span></td>
+    <td class="tr mono">${fK(rc.ftd)}</td><td class="tr mono">${fK(rc.mtd)}</td>
+    <td class="tc"><span class="bdg ${rc.share>10?'bbad':rc.share>5?'bwrn':'binfo'}">${rc.share}%</span></td>
+    <td class="tc" style="font-size:10px;color:var(--a2)">→ Monitor</td>
+    <td class="tc" style="font-size:10px;color:var(--ts)">${rc.banks}</td>
+  </tr>`).join('');
+  new Chart(document.getElementById('apiTypePie'),{type:'doughnut',data:{labels:['TD — Technical Decline','BD — Business Decline'],datasets:[{data:[55,45],backgroundColor:['#dc2626','#d97706'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  mkLine1('apiTFTrend','Technical Decline%',Array.from({length:20},()=>R(4,22)),'#dc2626');
+  buildAPIBankTable();
+}
+function buildAPIBankTable(){
+  document.getElementById('apiBankTb').innerHTML=BANKS.map((b,i)=>{
+    const req=R(100000,2000000),s=R(80,97),td=R(2,15),bd=R(1,8),rt=R(120,520);
+    const over=td>10;
+    const tCode=API_RC.filter(r=>r.type==='TD')[i%4].code;
+    const bCode=API_RC.filter(r=>r.type==='BD')[i%5].code;
+    return `<tr class="er ${over?'tr-crit':''}" onclick="toggleSR(this,'ab-${i}')">
+      <td class="mono">${i+1}</td><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(req)}</td><td class="tr mono">${fK(Math.floor(req*s/100))}</td>
+      <td class="tr mono">${fK(Math.floor(req*(100-s)/100))}</td>
+      <td class="tc"><span class="bdg ${s>=90?'bok':s>=80?'bwrn':'bbad'}">${s}%</span></td>
+      <td class="tc"><span class="bdg ${td>10?'bbad':td>5?'bwrn':'bok'}">${td}%</span></td>
+      <td class="tc"><span class="bdg ${bd>6?'bwrn':'bok'}">${bd}%</span></td>
+      <td class="tc"><span class="rc-pill rp-td">${tCode}</span></td>
+      <td class="tc"><span class="rc-pill rp-bd">${bCode}</span></td>
+      <td class="tc mono">${rt}ms</td>
+      <td class="tc">${over?'🔴':td>5?'🟡':'🟢'}</td>
+    </tr>
+    <tr class="sr" id="ab-${i}"><td colspan="13"><div class="sr-in">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--b1);margin-bottom:7px">TD/BD CODE BREAKDOWN — ${b.nm.toUpperCase()} · NACH API</div>
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        ${API_RC.slice(0,5).map(rc=>`<div><div class="rc-pill ${rc.type==='TD'?'rp-td':'rp-bd'}">${rc.code}</div><div style="font-size:14px;font-weight:800;color:var(--t0);margin-top:3px">${R(2,22)}%</div></div>`).join('')}
+      </div>
+    </div></td></tr>`;
+  }).join('');
+}
+
+function initBASE(){
+  ci.base=true;
+  document.getElementById('baseRCTb').innerHTML=BASE_RC.map((rc,i)=>`<tr>
+    <td class="mono">${i+1}</td>
+    <td><span class="rc-pill ${rc.type==='TD'?'rp-td':'rp-bd'}">${rc.code}</span></td>
+    <td style="font-size:11px">${rc.desc}</td>
+    <td class="tc"><span style="font-size:8.5px;font-weight:700;padding:1.5px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;background:${rc.type==='TD'?'rgba(220,38,38,.1)':'rgba(217,119,6,.1)'};color:${rc.type==='TD'?'var(--r2)':'var(--a1)'}">${rc.type}</span></td>
+    <td class="tr mono">${fK(rc.ftd)}</td><td class="tr mono">${fK(rc.mtd)}</td>
+    <td class="tc"><span class="bdg ${rc.share>20?'bbad':rc.share>10?'bwrn':'binfo'}">${rc.share}%</span></td>
+    <td class="tc" style="font-size:10px;color:var(--ts)">${rc.banks}</td>
+    <td style="font-size:10px;color:var(--ts)">${rc.root}</td>
+  </tr>`).join('');
+  new Chart(document.getElementById('baseTypePie'),{type:'doughnut',data:{labels:['TD','BD'],datasets:[{data:[46,54],backgroundColor:['#dc2626','#d97706'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+  new Chart(document.getElementById('baseMtdC'),{type:'bar',data:{labels:days20,datasets:[{type:'bar',label:'Success',data:Array.from({length:20},()=>R(38000000,44000000)),backgroundColor:'rgba(22,163,74,.5)',borderRadius:2,yAxisID:'y'},{type:'line',label:'TD%',data:Array.from({length:20},()=>R(2,5)),borderColor:'#dc2626',borderWidth:2,fill:false,tension:.4,pointRadius:0,yAxisID:'y1'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{y:{grid:{display:false}},y1:{position:'right',grid:{display:false},ticks:{callback:v=>v+'%',font:{size:9}}}}}});
+  document.getElementById('baseBankTb').innerHTML=BANKS.map((b,i)=>{
+    const req=R(50000,800000),s=R(88,98),td=R(1,8),bd=R(1,6);const over=td>6;
+    const tCode=BASE_RC.filter(r=>r.type==='TD')[i%2].code;const bCode=BASE_RC.filter(r=>r.type==='BD')[i%4].code;
+    return `<tr class="${over?'tr-crit':''}">
+      <td class="mono">${i+1}</td><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(req)}</td><td class="tr mono">${fK(Math.floor(req*s/100))}</td>
+      <td class="tr mono">${fK(Math.floor(req*(100-s)/100))}</td>
+      <td class="tc"><span class="bdg ${s>=95?'bok':s>=88?'bwrn':'bbad'}">${s}%</span></td>
+      <td class="tc"><span class="bdg ${td>6?'bbad':td>3?'bwrn':'bok'}">${td}%</span></td>
+      <td class="tc"><span class="bdg ${bd>5?'bwrn':'bok'}">${bd}%</span></td>
+      <td class="tc"><span class="rc-pill rp-td">${tCode}</span></td>
+      <td class="tc"><span class="rc-pill rp-bd">${bCode}</span></td>
+      <td class="tc">${over?'🔴':td>3?'🟡':'🟢'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function initAPB(){
+  ci.apb=true;
+  mkLine1('apbPMtd','Pendency','#dc2626',Array.from({length:20},()=>R(100000,140000)));
+  mkBarSimple('apbAgBar',['T+0','T+1','T+2','T+3+'],[78182,34210,10000,2440],['#16a34a','#d97706','#ea580c','#dc2626']);
+  buildPATable('apbBkTb','APB',true);
+}
+function initACHCR(){
+  ci.achcr=true;
+  mkLine1('crPMtd','Pendency','#16a34a',Array.from({length:20},()=>R(70000,95000)));
+  mkLine1('crDMtd','Deemed','#d97706',Array.from({length:20},()=>R(3000,5500)));
+  buildPATable('crBkTb','ACH CR',false);
+}
+function initACHDR(){
+  ci.achdr=true;
+  buildPATable('drBkTb','ACH DR',false,true);
+}
+function initAV(){
+  ci.av=true;
+  mkLine1('avExpMtd','Expired','#d97706',Array.from({length:20},()=>R(2000,4500)));
+  mkBarSimple('avExpYtd',MONTHS,[52000,58000,61000,64200],['rgba(217,119,6,.5)','rgba(217,119,6,.5)','rgba(220,38,38,.5)','rgba(220,38,38,.7)']);
+  document.getElementById('avBkTb').innerHTML=BANKS.map(b=>{
+    const ftd=R(50,500),mtd=R(1000,9000),over=mtd>5000;
+    return `<tr class="${over?'tr-crit':''}"><td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td><td class="tr mono">${fK(ftd)}</td><td class="tr mono">${fK(mtd)}</td><td class="tr mono">${fK(R(10000,90000))}</td><td class="tc"><span class="bdg ${R(0,1)?'bbad':'bok'}">${R(0,1)?'↑ '+R(1,18)+'%':'↓ '+R(1,8)+'%'}</span></td><td class="tc"><span class="bdg ${over?'bbad':'bok'}">${over?'↑ Rising':'↓ Stable'}</span></td><td class="tc">${over?'🔴':'🟢'}</td></tr>`;
+  }).join('');
+}
+function initEMandate(){
+  ci.emandate=true;
+  const modes=[
+    {nm:'Internet Banking',b:64,i:817958,a:464469,r:353489,top:'Auth failed — invalid credentials'},
+    {nm:'Debit Card',b:183,i:2506760,a:1915980,r:590780,top:'Technical/connectivity issues at bank end'},
+    {nm:'Aadhaar',b:212,i:3742456,a:2922845,r:819611,top:'Aadhaar not linked to debtor account'},
+    {nm:'Simplified Aadhaar',b:59,i:524820,a:398424,r:126396,top:'Name mismatch with CBS'},
+    {nm:'E-Sign',b:467,i:1248260,a:1148240,r:100020,top:'Incomplete submission'}
+  ];
+  document.getElementById('emModeTb').innerHTML=modes.map(m=>{
+    const ap=(m.a/m.i*100).toFixed(1),rp=(m.r/m.i*100).toFixed(1);
+    return `<tr><td class="tbn">${m.nm}</td><td class="tc mono">${m.b}</td><td class="tr mono">${fK(m.i)}</td><td class="tr mono">${fK(m.a)}</td><td class="tr mono">${fK(m.r)}</td><td class="tc"><span class="bdg ${parseFloat(ap)>=85?'bok':'bwrn'}">${ap}%</span></td><td class="tc"><span class="bdg ${parseFloat(rp)>20?'bbad':parseFloat(rp)>10?'bwrn':'bok'}">${rp}%</span></td><td style="font-size:10.5px;color:var(--ts)">${m.top}</td></tr>`;
+  }).join('');
+  new Chart(document.getElementById('emRejPie'),{type:'doughnut',data:{labels:['Aadhaar not linked','Auth failed','Tech issue','Name mismatch','Other'],datasets:[{data:[31,22,18,14,15],backgroundColor:['#dc2626','#d97706','#7c3aed','#0891b2','#9ca3af'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'55%',plugins:{legend:{position:'right',labels:{boxWidth:9,font:{size:10}}}}}});
+}
+function initMMS(){
+  ci.mms=true;
+  new Chart(document.getElementById('mmsMtdC'),{type:'bar',data:{labels:days20,datasets:[{label:'Initiated',data:Array.from({length:20},()=>R(19000,23000)),backgroundColor:'rgba(8,145,178,.5)',borderRadius:2},{label:'Accepted',data:Array.from({length:20},()=>R(16500,20500)),backgroundColor:'rgba(22,163,74,.5)',borderRadius:2},{label:'Rejected',data:Array.from({length:20},()=>R(2000,3000)),backgroundColor:'rgba(220,38,38,.5)',borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}});
+  document.getElementById('mmsRejL').innerHTML=[{r:'Mandate details mismatch',p:42},{r:'Signature mismatch',p:28},{r:'Account closed',p:14},{r:'Incomplete form',p:10},{r:'Other',p:6}].map(rc=>`<div style="display:flex;align-items:center;gap:8px;padding:5.5px 0;border-bottom:1px solid var(--bd)"><div style="flex:1;font-size:11.5px">${rc.r}</div><div style="width:90px"><div class="bt"><div class="bf bfr" style="width:${rc.p*2.2}%"></div></div></div><div class="mono" style="width:30px;text-align:right">${rc.p}%</div></div>`).join('');
+}
+
+/* ── RED FLAGS ── */
+const FLAGS=[
+  {s:'H',ico:'🔴',t:'APB — Pendency Aging T+2: 10,000 · 12 banks above threshold',d:'T+3+: 2,440. Deemed: 8,240 accumulating.',m:'APB · T+2 · 07-Apr-26',a:'Draft Letter'},
+  {s:'H',ico:'🔴',t:'ACH DR — 4 banks SLA breached · T+1 Pendency Aging: 24,000',d:'T+2: 8,560 · T+3+: 2,440. Auto-escalation triggered.',m:'ACH DR · SLA · 10-Apr-26',a:'Send Reminder'},
+  {s:'H',ico:'🔴',t:'NACH API — PUNB TD 22.4% · Code 536 (CBS Not Responding)',d:'vs avg 6.0%. CBS-API endpoint unresponsive since 09:15 AM.',m:'NACH API · TD · 10-Apr-26',a:'Draft Letter'},
+  {s:'H',ico:'🔴',t:'eMandate — Aadhaar Rejected: 8,19,611 · Growing MoM',d:'Aadhaar not linked = 31% of rejections.',m:'eMandate · Aadhaar · 10-Apr-26',a:'Escalate'},
+  {s:'H',ico:'🔴',t:'AV — Expired (MTD): 64,200 · Above 60,000 threshold',d:'FTD: 3,180 ↑6%. YTD rising monthly.',m:'AV · Expired · 10-Apr-26',a:'Circular'},
+  {s:'P',ico:'✕',t:'Cancel Mandates Decline: 16.7% · Code 211 (Late Response)',d:'IDIB · BARB · PUNB above 15% threshold. CBS batch job timing conflict suspected. See Cancel/Amendment tab.',m:'Cancel/Amendment · Code 211 · 10-Apr-26',a:'View C/A Tab'},
+  {s:'P',ico:'✎',t:'Amendment Decline: 16.0% · Code 123 (RespData tag missing)',d:'BARB · ICIC · UTIB — Bank SDK non-compliance. Developer advisory required. See Cancel/Amendment tab.',m:'Cancel/Amendment · Code 123 · 10-Apr-26',a:'View C/A Tab'},
+  {s:'M',ico:'🟡',t:'ACH CR — Bihar Gramin Bank T+2 Pendency Aging breach',d:'T+2: 4,800 pending 2+ days. Deemed risk.',m:'ACH CR · T+2 · 08-Apr-26',a:'Reminder'},
+  {s:'M',ico:'🟡',t:'APB — Deemed (YTD) rising trajectory',d:'MTD: 1.82L · YTD: 21.4L. 3-month upward trend.',m:'APB · Deemed · MTD',a:'Review'},
+  {s:'AI',ico:'🤖',t:'AI: APB T+3+ will cross 3,000 by month-end',d:'Based on 3-week trajectory. Predictive breach in 4 days.',m:'AI predictive · 87% confidence',a:'Pre-empt'},
+  {s:'AI',ico:'🤖',t:'AI: Cancel Decline spikes at month-end — pattern confirmed',d:'CBS batch job conflict observed 3 consecutive months.',m:'AI pattern · Cancel/Amendment · 91% confidence',a:'Fix Schedule'}
+];
+function initRedFlags(){
+  ci.redflags=true;
+  swRF('all',null);
+  document.getElementById('rfSLATb').innerHTML=[
+    ['APB','Multiple Banks','Pendency Aging T+2','< 5,000','10,000','07-Apr','HIGH'],
+    ['ACH DR','4 Banks','Pendency Aging T+1','T+1 SLA','Breached','10-Apr','HIGH'],
+    ['NACH API','PUNB','Technical Decline%','< 10%','22.4%','10-Apr','HIGH'],
+    ['Cancel/Amend','IDIB · BARB · PUNB','Cancel Decline%','< 15%','16.7-22%','08-Apr','HIGH'],
+    ['Cancel/Amend','BARB · ICIC · UTIB','Amendment Decline%','< 15%','16.0-19%','08-Apr','HIGH'],
+    ['eMandate','Aadhaar Mode','Rejected Count','< 7L','8,19,611','01-Apr','HIGH'],
+    ['AV','Multiple Banks','Expired (MTD)','< 60,000','64,200','08-Apr','MED'],
+    ['ACH CR','Bihar Gramin','Pendency Aging T+2','< 3,000','4,800','08-Apr','MED']
+  ].map(([pr,b,f,thr,act,since,sev])=>`<tr class="${sev==='HIGH'?'tr-crit':''}">
+    <td class="tbn" style="${pr.includes('Cancel')?'color:var(--p1)':''}">${pr}</td><td>${b}</td>
+    <td class="tc"><span class="bdg binfo">${f}</span></td>
+    <td class="tc"><span class="bdg bok">${thr}</span></td>
+    <td class="tc"><span class="bdg bbad">${act}</span></td>
+    <td class="tc mono">${since}</td>
+    <td class="tc"><span class="chip ${sev==='HIGH'?'cd':'cw'}">${sev}</span></td>
+    <td class="tc"><button style="padding:3px 9px;font-size:10px;font-weight:700;border:none;border-radius:4px;cursor:pointer;background:${pr.includes('Cancel')?'var(--p1)':sev==='HIGH'?'var(--r2)':'var(--a2)'};color:#fff;font-family:'Inter',sans-serif" onclick="${pr.includes('Cancel')?"nav('ca')":"openModal('letter','"+pr+"')"}">Action</button></td>
+  </tr>`).join('');
+}
+function swRF(f,el){
+  if(el){document.querySelectorAll('#rfTG .stab').forEach(t=>t.classList.remove('on'));el.classList.add('on')}
+  const show=f==='all'?FLAGS:f==='P'?FLAGS.filter(x=>x.s==='P'):f==='AI'?FLAGS.filter(x=>x.s==='AI'):FLAGS.filter(x=>x.s===f);
+  document.getElementById('flagGrid').innerHTML=show.map(fl=>`
+    <div class="fc fc-${fl.s}">
+      <div class="fc-top"><div class="fc-ico">${fl.ico}</div><span class="fc-sev">${fl.s==='H'?'HIGH':fl.s==='M'?'MED':fl.s==='P'?'C/A':fl.s==='AI'?'AI':'LOW'}</span></div>
+      <div><div class="fc-title">${fl.t}</div><div class="fc-desc">${fl.d}</div><div class="fc-meta">${fl.m}</div></div>
+      <button class="fc-btn" onclick="${fl.s==='P'?"nav('ca')":"openModal('letter','"+fl.t.split('—')[0].trim()+"')"}">${fl.a}</button>
+    </div>`).join('');
+}
+
+function initBankwise(){
+  ci.bankwise=true;
+  document.getElementById('bkTb').innerHTML=BANKS.map((b,i)=>{
+    const apbP=R(1000,25000),apbD=R(100,4000),crP=R(500,12000),crD=R(50,2000);
+    const drP=R(800,18000),drD=R(80,2500),avE=R(50,600);
+    const emI=R(10000,80000),emA=Math.floor(emI*R(72,98)/100),emR=emI-emA;
+    const apiTD=R(2,22),apiBD=R(1,8),baseTD=R(1,8),baseBD=R(1,6);
+    const caCD=R(5,25),caAD=R(4,20);
+    const crit=apiTD>12||caCD>18;
+    return `<tr class="${crit?'tr-crit':''}">
+      <td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(apbP)}</td><td class="tc"><span class="bdg ${apbD>3000?'bwrn':'bok'}">${fK(apbD)}</span></td>
+      <td class="tr mono">${fK(crP)}</td><td class="tc"><span class="bdg ${crD>1500?'bwrn':'bok'}">${fK(crD)}</span></td>
+      <td class="tr mono">${fK(drP)}</td><td class="tc"><span class="bdg ${drD>2000?'bwrn':'bok'}">${fK(drD)}</span></td>
+      <td class="tr mono"><span class="bdg ${avE>400?'bbad':'bok'}">${fK(avE)}</span></td>
+      <td class="tr mono">${fK(emI)}</td><td class="tr mono">${fK(emA)}</td>
+      <td class="tc"><span class="bdg ${emR>8000?'bbad':emR>4000?'bwrn':'bok'}">${fK(emR)}</span></td>
+      <td class="tc"><span class="bdg ${apiTD>10?'bbad':apiTD>5?'bwrn':'bok'}">${apiTD}%</span></td>
+      <td class="tc"><span class="bdg ${apiBD>6?'bwrn':'bok'}">${apiBD}%</span></td>
+      <td class="tc"><span class="bdg ${baseTD>6?'bwrn':'bok'}">${baseTD}%</span></td>
+      <td class="tc"><span class="bdg ${baseBD>5?'bwrn':'bok'}">${baseBD}%</span></td>
+      <td class="tc"><span class="bdg ${caCD>18?'bbad':caCD>12?'bwrn':'bok'}" style="color:var(--p1);background:var(--ppale);border-color:var(--pbrd)">${caCD}%</span></td>
+      <td class="tc"><span class="bdg ${caAD>18?'bbad':caAD>12?'bwrn':'bok'}" style="color:var(--p1);background:var(--ppale);border-color:var(--pbrd)">${caAD}%</span></td>
+      <td class="tc">${crit?'🔴':emR>5000||caCD>12?'🟡':'🟢'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function buildPATable(id,prod,showAction,showSLA){
+  const tb=document.getElementById(id);if(!tb)return;
+  tb.innerHTML=BANKS.map((b,i)=>{
+    const pend=R(500,20000),t0=R(300,12000),t1=R(100,5000),t2=R(20,2000),t3=R(0,500),deemed=R(50,3000);
+    const over=t2>1000||t3>200;
+    return `<tr class="er ${over?'tr-crit':''}" onclick="toggleSR(this,'pa-${prod.replace(' ','')}-${i}')">
+      <td class="mono">${b.ifn}</td><td class="tbn">${b.nm}</td>
+      <td class="tr mono">${fK(pend)}</td><td class="tr mono">${fK(pend*R(18,22))}</td>
+      <td class="tc"><span class="bdg bok">${fK(t0)}</span></td>
+      <td class="tc"><span class="bdg bwrn">${fK(t1)}</span></td>
+      <td class="tc"><span class="bdg ${t2>1000?'bbad':'bwrn'}">${fK(t2)}</span></td>
+      <td class="tc"><span class="bdg ${t3>200?'bbad':'bok'}">${fK(t3)}</span></td>
+      <td class="tr mono">${fK(deemed)}</td><td class="tr mono">${fK(deemed*R(18,22))}</td>
+      ${showSLA?`<td class="tc"><span class="bdg ${over?'bbad':'bok'}">${over?'Breached':'Within SLA'}</span></td>`:''}
+      <td class="tc">${over?'🔴':t1>3000?'🟡':'🟢'}</td>
+      ${showAction?`<td class="tc">${over?`<button style="padding:2px 8px;background:var(--r2);color:#fff;border:none;border-radius:4px;font-size:9.5px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif" onclick="event.stopPropagation();openModal('letter','${prod}')">Letter</button>`:'—'}</td>`:''}
+    </tr>
+    <tr class="sr" id="pa-${prod.replace(' ','')}-${i}"><td colspan="16"><div class="sr-in">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--b1);margin-bottom:7px">PENDENCY AGING DETAIL — ${b.nm.toUpperCase()} · ${prod}</div>
+      <div style="display:flex;gap:18px">
+        ${['T+0','T+1','T+2','T+3+'].map((t,j)=>`<div><div style="font-size:8px;color:var(--tm);font-family:'JetBrains Mono',monospace;margin-bottom:1px">AGING ${t}</div><div style="font-size:18px;font-weight:800;color:${j>=2?'var(--r2)':'var(--t0)'}">${fK([t0,t1,t2,t3][j])}</div></div>`).join('')}
+        <div><div style="font-size:8px;color:var(--tm);font-family:'JetBrains Mono',monospace">DEEMED</div><div style="font-size:18px;font-weight:800;color:var(--t0)">${fK(deemed)}</div></div>
+      </div>
+    </div></td></tr>`;
+  }).join('');
+}
+
+/* ── CHART HELPERS ── */
+function mkLine1(id,label,color,data){new Chart(document.getElementById(id),{type:'line',data:{labels:days20,datasets:[{label,data,borderColor:color,borderWidth:2,fill:true,backgroundColor:color+'14',tension:.4,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scores:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}})}
+function mkLine2(id,labels,datasets,colors){new Chart(document.getElementById(id),{type:'line',data:{labels:days20,datasets:labels.map((l,i)=>({label:l,data:datasets[i],borderColor:colors[i],borderWidth:1.8,fill:false,tension:.4,pointRadius:0}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:8,font:{size:10}}}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}})}
+function mkBarSimple(id,labels,data,colors){new Chart(document.getElementById(id),{type:'bar',data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{ticks:{callback:v=>fK(v),font:{size:9}}}}}})}
+
+/* ── UTILS ── */
+function toggleSR(row,id){
+  const sr=document.getElementById(id);if(!sr)return;
+  const open=sr.classList.contains('open');
+  document.querySelectorAll('.sr.open').forEach(s=>s.classList.remove('open'));
+  document.querySelectorAll('.er.open').forEach(r=>r.classList.remove('open'));
+  if(!open){sr.classList.add('open');row.classList.add('open')}
+}
+function openModal(type,prod){
+  const p=prod||'Product';
+  document.getElementById('mT').textContent=`Performance Letter — ${p}`;
+  document.getElementById('mB').innerHTML=`<pre style="font-family:'Inter',sans-serif;font-size:12px;line-height:1.8;white-space:pre-wrap;background:var(--s1);border:1.5px solid var(--bd);border-radius:var(--r3px);padding:16px;color:var(--tx)">National Payments Corporation of India
+One India Bulls Centre, Tower 2 B, 10th Floor, Mumbai – 400 013
+
+                            Ref: NPCI/NACH/2026/XXX
+                            Date: 10 April 2026
+
+To
+The General Manager (Operations / Technology)
+[Bank Name]
+
+Sub: ${p.includes('Cancel')?'Elevated Cancel Mandate Decline Rate — Code 211 (Late Response) — Corrective Action Required':p.includes('Amendment')?'Elevated Amendment Decline Rate — Code 123 (RespData Tag Missing) — API Compliance Required':p.includes('API')?'Elevated Technical Decline Rate under NACH API Services':p.includes('APB')?'Elevated Pendency Aging under APB':'Performance Issue — Corrective Action Required'}
+
+${p.includes('Cancel')?`NPCI's review reveals elevated Cancel Mandate decline rate at your bank:
+  a. Cancel Mandate Decline Rate (FTD): ${R(16,25)}% — above 15% threshold
+  b. Primary decline code: Code 211 (Late Response)
+     The bank's API is not responding within the permitted time window when
+     NPCI sends the cancel mandate request.
+  c. Root cause analysis indicates CBS batch job timing conflict.
+
+Required Actions:
+  a. CBS batch job scheduling audit to prevent timeout conflicts
+  b. API response time optimisation for cancel mandate flow
+  c. Daily status update to NPCI until decline rate < 15%`:
+p.includes('Amendment')?`NPCI's review reveals elevated Amendment decline rate at your bank:
+  a. Amendment Decline Rate (FTD): ${R(15,22)}% — above 15% threshold
+  b. Primary decline code: Code 123 (RespData tag missing in API response)
+     The bank's API is not including the mandatory RespData tag in
+     amendment responses — non-compliant with NPCI API specification.
+
+Required Actions:
+  a. SDK update: ensure RespData tag is included in all amendment responses
+  b. API compliance validation against NPCI technical specification
+  c. Developer advisory to bank technology team`:
+`NPCI's review reveals performance concerns for ${p}. Corrective action required within 10 working days.`}
+
+Yours faithfully,
+
+Giridhar G.M.
+Chief — Customer Success
+National Payments Corporation of India</pre>`;
+  document.getElementById('mainMov').classList.add('open');
+}
+function cM(){document.getElementById('mainMov').classList.remove('open')}
+document.getElementById('mainMov').addEventListener('click',function(e){if(e.target===this)cM()});
+function exp(f){alert(`Exporting as .${f.toUpperCase()}…\nIn production: formatted ${f.toUpperCase()} with all fields, charts and auto-summary.`)}
+</script>
+</body>
+</html>
